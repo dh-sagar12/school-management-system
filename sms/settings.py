@@ -20,7 +20,6 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
 env = environ.Env()
 environ.Env.read_env()
 
@@ -34,7 +33,8 @@ SECRET_KEY = "django-insecure-owlta%@a$a6zzfi@e6%s#7v_ad7xo1+*323rcm5=@1(ks#0g$-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "127.0.0.1:8000",
+                 "127.0.0.1:3000", "localhost:3000"]
 
 
 # Application definition
@@ -46,12 +46,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "corsheaders", 
-    "rest_framework_simplejwt", 
+    "corsheaders",
+    "rest_framework_simplejwt",
     "authentication",
     "core",
     "student",
-    "academic", 
+    "academic",
     "staff"
 ]
 
@@ -59,28 +59,29 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
-    ], 
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'authentication.authentication.CustomAuthentication',
     ]
 }
 
-SIMPLE_JWT  =  {
-  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-  'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-  'AUTH_COOKIE': 'access'
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_COOKIE': 'access'
 }
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'authentication.middlewares.LoggedInBranchMiddleware', 
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 ROOT_URLCONF = "sms.urls"
@@ -153,7 +154,6 @@ USE_TZ = True
 AUTH_USER_MODEL = 'authentication.User'
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -163,8 +163,7 @@ STATICFILES_DIRS = [
 ]
 
 
-
-MEDIA_ROOT =os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Default primary key field type
@@ -173,5 +172,5 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-CORS_ALLOW_ALL_ORIGINS: True
-CORS_ALLOW_CREDENTIALS: True
+CORS_ALLOW_CREDENTIALS =  True
+CORS_ALLOW_ALL_ORIGINS =  True

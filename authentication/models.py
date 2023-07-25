@@ -1,10 +1,11 @@
 
-from typing import Any, Iterable, Optional
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 import random
+
+# from core.models import BranchModel
 # Create your models here.
 
 
@@ -50,6 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     email= models.EmailField(_("email address"), max_length=254, unique=True)
     username =  models.CharField(_("username"), max_length=20, unique=True, auto_created=True)
+    branch_id =  models.ForeignKey('core.BranchModel', on_delete=models.DO_NOTHING, db_column='branch_id')
     first_name= models.CharField(max_length=100, null=False)
     middle_name = models.CharField(max_length=100, blank= True, null=True)
     last_name =  models.CharField(max_length=100, null=False)
@@ -82,3 +84,45 @@ class User(AbstractBaseUser, PermissionsMixin):
             random_int  = random.randint(100, 1000)
             self.username = f"{self.first_name}{random_int}"
         return super().save(*args, **kwargs)
+    
+        
+
+
+class BranchLoginPolicyModel(models.Model):
+    id  =  models.BigAutoField(primary_key=True)
+    user_id =  models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column='user_id', related_name='branch_policies_user_id')
+    branch_id =  models.ForeignKey('core.BranchModel', on_delete= models.DO_NOTHING, db_column='branch_id')
+    date_access_from  =  models.DateField(null=False, blank=False, db_column='date_access_from')
+    date_access_to  =  models.DateField(null=False, blank=False, db_column='date_access_to')
+    time_access_from =  models.TimeField(null=False, blank=False, db_column='time_access_from')
+    time_access_to =  models.TimeField(null=False, blank=False, db_column='time_access_to')
+    created_by =  models.ForeignKey(User, on_delete=models.DO_NOTHING,  null=False, db_column='created_by', related_name='branch_policies_created_by')
+
+    class Meta:
+        db_table=  'auth"."branch_policies'
+        verbose_name = "Branch Policy"
+        verbose_name_plural = "Branch Policies"    
+
+
+    def __str__(self):
+        return f"{self.user_id}"
+    
+
+
+class MenuPermissionModel(models.Model):
+    id  = models.BigAutoField(primary_key=True)
+    user_id  = models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column='user_id', related_name='menu_policies_user_id')
+    branch_id  =  models.ForeignKey('core.BranchModel', on_delete=models.DO_NOTHING, db_column='branch_id')
+    menu_id  =  models.ForeignKey('core.MenuModel', on_delete=models.DO_NOTHING, db_column='menu_id')
+    created_by =  models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column='created_by', related_name='menu_policies_created_by')
+    can_edit =  models.BooleanField(default=False, null=False )
+
+
+    class Meta:
+        db_table =  'auth"."menu_policies'
+        verbose_name = "Menu Policy"
+        verbose_name_plural = "Menu Policies"  
+
+    def __str__(self):
+        return f"{self.user_id}"
+

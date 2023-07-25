@@ -1,6 +1,7 @@
 from django.db import models
 from authentication.models import User
-
+from rest_framework.exceptions import ValidationError
+from rest_framework import status
 # Create your models here.
 
 
@@ -29,9 +30,21 @@ class BranchModel(models.Model):
         db_table  =  'core"."branches'
 
 
+    def save(self, *args, **kwargs):
+        
+        if self.is_primary_office:
+            already_exists  =  BranchModel.objects.filter(is_primary_office  =  True).exists()
+            
+            if already_exists:
+                raise ValidationError({'error': 'Duplicate Head Office Not Allowed', 'status': status.HTTP_403_FORBIDDEN }) 
+            
+        super().save(*args, **kwargs)
+ 
+
     def __str__(self) -> str:
         return self.nick_name
-    
+
+
 
 class MenuModel(models.Model):
     id =  models.BigAutoField(primary_key=True)
@@ -53,6 +66,7 @@ class MenuModel(models.Model):
 
     class Meta:
         db_table =  'core"."menus'
+
 
 
 

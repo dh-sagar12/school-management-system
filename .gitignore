@@ -141,15 +141,20 @@ GitHub.sublime-settings
 
 # dependencies
 **/node_modules
-/.pnp
+**/.pnp
 .pnp.js
+**/.pnp.js
+**/.yarn
+.yarn
+.yarn
+*install-state.gz
 
 # testing
 /coverage
 
 # next.js
 **/.next/
-/out/
+**/out/
 
 # production
 **/build

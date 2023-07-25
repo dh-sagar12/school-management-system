@@ -9,12 +9,14 @@ from rest_framework.validators import ValidationError
 class UserLoginSerializer(ModelSerializer):
     email  =  serializers.EmailField()
     password  =  serializers.CharField()
+    branch_id  =  serializers.IntegerField(required= True)
     class Meta:
         model = User
-        fields = ['email', 'password']
+        fields = ['email', 'password', 'branch_id']
         extra_kwargs = {
             'password': {'write_only': True}, 
-            'email': {'write_only': True}
+            'email': {'write_only': True}, 
+            'branch_id': {'write_only': True}
         }
 
 
@@ -22,7 +24,7 @@ class UserSerializer(ModelSerializer):
     confirm_password =  serializers.CharField(write_only = True)
     class Meta:
         model  = User
-        fields =  ['id', 'email', 'username', 'first_name',  'confirm_password',  'password', 'middle_name', 'last_name', 'date_of_birth', 'gender']
+        fields =  ['id', 'email', 'username', 'branch_id',  'first_name',  'confirm_password',  'password', 'middle_name', 'last_name', 'date_of_birth', 'gender']
         extra_kwargs = {
             'password': {'write_only': True} ,            
             'username': {'read_only': True} ,            
