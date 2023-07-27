@@ -10,7 +10,6 @@ import {
     Link,
     Button,
     Heading,
-    Text,
     useColorModeValue,
     FormErrorMessage,
     useBoolean,
@@ -22,26 +21,31 @@ import { LoginFormValidationSchema } from '@/validationSchema/authFormValidator'
 import APIHandlers from '@/utils/APIHandlers';
 import { useToast } from '@chakra-ui/react'
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
+import { BranchesDropdownType } from '@/coreTypes'
 
 
-const InitialValue: Login = {
-    email: '',
-    password: '',
-    branch_id: 0
+
+interface Prop {
+    Branches: BranchesDropdownType[]
 }
 
-const Login = () => {
+
+const Login = (prop: Prop) => {
+
+
+    const InitialValue: Login = {
+        email: '',
+        password: '',
+        branch_id: prop.Branches[0].id
+    }
 
     const [loading, setLoading] = useBoolean()
-    const [BranchSelected, setBranchSelected] = useState(0)
 
     const toast = useToast()
 
     const router = useRouter()
     const searchParams = useSearchParams()
-
-
 
     const form = useFormik({
         initialValues: InitialValue,
@@ -50,7 +54,7 @@ const Login = () => {
             console.log(values);
 
             setLoading.on()
-            APIHandlers.post('/api/auth/login/', values).then(responseData => {
+            APIHandlers.post('/api/auth/login/', values).then(responseData => {                
                 setLoading.off()
                 toast({
                     title: 'Logged In Successfully!!',
@@ -65,7 +69,7 @@ const Login = () => {
 
             }).catch((error) => {
                 console.log(error);
-                
+
                 toast({
                     title: 'Invalid Credentials',
                     position: 'top-right',
@@ -81,8 +85,6 @@ const Login = () => {
 
     const handleBranchChange = (event: ChangeEvent<HTMLSelectElement>): void => {
         form.values.branch_id = parseInt(event.target.value)
-        setBranchSelected(form.values.branch_id)
-        
     }
 
     return (
@@ -135,12 +137,14 @@ const Login = () => {
                             <FormControl id="branch_id"
                             >
                                 <FormLabel>Branch</FormLabel>
-                                <Select  name='branch_id' defaultValue={form.values.branch_id}
+                                <Select name='branch_id'
                                     onChange={handleBranchChange}
                                 >
-                                    <option value={1} >Option 1</option>
-                                    <option value={2}>Option 2</option>
-                                    <option value={3}>Option 3</option>
+                                    {
+                                        prop.Branches.map((elem) => {
+                                            return <option value={elem.id} key={elem.id}>{elem.org_code} {elem.nick_name}</option>
+                                        })
+                                    }
                                 </Select>
                             </FormControl>
 

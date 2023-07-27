@@ -2,9 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Providers } from './providers'
-import Layout from '@/components/Layout'
-import { headers } from 'next/headers';
-import React from 'react'
+import React  from 'react'
 import AuthChecker from '@/components/Auth/AuthChecker'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -19,17 +17,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
-  // const headersList = headers();
-  // const domain = headersList.get('host') || "";
-  // const fullUrl = headersList.get('referer') || "";
-  // const [, pathname] = fullUrl.match(new RegExp(`https?:\/\/${domain}(.*)`)) || [];
-
-  // const LayoutNotNeeded = ['/auth/login', 'auth/signup'].includes(pathname);
-
-  // const LayoutComponent = LayoutNotNeeded ?  React.Fragment : Layout ;
-
-
 
   return (
     <html lang="en">

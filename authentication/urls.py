@@ -1,6 +1,6 @@
 from django.urls import  path
 
-from authentication.views import CreateUserView, UserLoginView, UserLogoutView, AuthorizeUserView
+from authentication.views import AuthenticatedBranchView, CreateUserView, UserLoginView, UserLogoutView, InitAuthorizeUserBranchView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 
@@ -11,7 +11,8 @@ urlpatterns = [
     path('refreshtoken/', TokenRefreshView.as_view(), name='refresh_token'),
     path('gettoken/', TokenObtainPairView.as_view(), name='get_token'),
     path('verifytoken/', TokenVerifyView.as_view(), name='verify_token'),
-    path('user/', AuthorizeUserView.as_view(), name='vt'),
+    path('init/', InitAuthorizeUserBranchView.as_view(), name='init_user_branch'),
+    path('branch/', AuthenticatedBranchView.as_view(), name='loggedin_branch'),
 
 
 

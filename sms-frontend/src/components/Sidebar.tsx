@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
     Flex,
     IconButton
@@ -9,9 +9,18 @@ import {
     FiHome
 } from 'react-icons/fi'
 import NavItem from './NavItems'
+import { AuthContext } from '@/Context/AuthContext'
+
 
 
 export default function Sidebar() {
+    
+
+    const  { usermeta }  = useContext(AuthContext)
+
+    console.log(usermeta);
+    
+
     const [navSize, changeNavSize] = useState("large")
     return (
         <>

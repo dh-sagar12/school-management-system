@@ -1,6 +1,7 @@
 // app/providers.tsx
 'use client'
 
+import { AuthContextProvider } from '@/Context/AuthContext'
 import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider } from '@chakra-ui/react'
 import { extendTheme } from '@chakra-ui/react'
@@ -23,11 +24,13 @@ export function Providers({
   children: React.ReactNode
 }) {
   return (
+    <AuthContextProvider>
+      <CacheProvider>
+        <ChakraProvider toastOptions={{ defaultOptions: { position: 'top' } }} >
+          {children}
+        </ChakraProvider>
+      </CacheProvider>
+    </AuthContextProvider>
 
-    <CacheProvider>
-      <ChakraProvider toastOptions={{ defaultOptions: { position: 'top' } }} >
-        {children}
-      </ChakraProvider>
-    </CacheProvider>
   )
 }

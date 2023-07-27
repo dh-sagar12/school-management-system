@@ -1,11 +1,15 @@
 import Login from '@/components/Auth/Login'
+import APIHandlers from '@/utils/APIHandlers'
 import React from 'react'
 
-const page = () => {
+
+const page = async () => {
+  const branches = await APIHandlers.get('/api/core/branch-dropdown/')
   return (
     <>
       <div>
-        <Login />
+
+        <Login Branches={branches} />
       </div>
     </>
   )

@@ -4,10 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from authentication.authentication import CustomAuthentication
 from core.models import BranchModel, MenuModel
-
-from core.serializers import BranchSerializer, MenuSerializer
+from core.serializers import BranchDropDownSerilizer, BranchSerializer, MenuSerializer
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Create your views here.
 
@@ -28,14 +26,31 @@ class BranchesView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        try:
-            id  =  request.data.get('id')
-            branch  =  BranchModel.objects.get(id  =id)
-            serializer  =  BranchSerializer(branch)
+        request_id  =  request.data.get('id')
+
+        if (request_id >  0 ):
+            try:
+                id  =  request.data.get('id')
+                branch  =  BranchModel.objects.get(id  =id)
+                serializer  =  BranchSerializer(branch)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            except Exception as e:
+                return Response({'error': f'{e}'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            branch  =  BranchModel.objects.all()
+            serializer =  BranchSerializer(branch, many = True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except Exception as e:
-            return Response({'error': f'{e}'}, status=status.HTTP_404_NOT_FOUND)
+
+class BrachDropDownView(APIView):
+    authentication_classes= []
+    permission_classes = []
+
+    def get(self, request):
+        branches =  BranchModel.objects.all()
+        serializer  =  BranchDropDownSerilizer(branches, many =  True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 

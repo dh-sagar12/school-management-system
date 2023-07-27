@@ -11,10 +11,6 @@ class LoggedInBranchMiddleware:
 
     def __call__(self, request):
 
-        print('requesst.path', request.path)
-        print('requesst.method', request.method)
-        print('requesst.method', request.body)
-
         if request.method == 'POST' and request.path == '/api/auth/login/':
             try:
                 data = json.loads(request.body)
@@ -30,9 +26,7 @@ class LoggedInBranchMiddleware:
 
             user = authenticate(email=email, password=password)
             if user and branch_id is not None:
-                branch = BranchModel.objects.get(
-                    id=branch_id)
-                request.session['branch'] = branch.id
+                request.session['branch'] = branch_id
 
         response = self.get_response(request)
         return response

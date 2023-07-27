@@ -14,6 +14,18 @@ class BranchSerializer(ModelSerializer):
         
 
 
+class BranchDropDownSerilizer(ModelSerializer):
+
+    class Meta:
+        model  = BranchModel
+        fields  =  ('id', 'org_code', 'nick_name')
+        extra_kwargs = {
+            'id': {'read_only': True}, 
+            'org_code': {'read_only': True},
+            'nick_name': {'read_only': True}
+        }
+    
+
 
 class MenuSerializer(ModelSerializer):
 
