@@ -1,15 +1,14 @@
 'use client';
 
 import React, { Suspense, useEffect, useState, createContext, useContext } from 'react'
-import Layout from '../Layout';
-import { usePathname, useRouter } from 'next/navigation';
+import LayOut from '../Layout/Layout';
+import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import APIHandlers from '@/utils/APIHandlers';
 import { AuthContext } from '@/Context/AuthContext';
 
 
 
-
-const AuthChecker = ({ children }: { children: React.ReactNode }) => {
+const AuthChecker =  ({ children }: { children: React.ReactNode }) => {
 
     const pathname = usePathname();
     const router = useRouter()
@@ -41,7 +40,7 @@ const AuthChecker = ({ children }: { children: React.ReactNode }) => {
                 if (error) {
                     setisLoading(true)
                     setIsLayoutNeeded(true);
-                    router.push('/auth/login/')
+                    router.push(`/auth/login/?ReturnUrl=${pathname}`)
                     setisLoading(false)
 
                 }
@@ -65,10 +64,11 @@ const AuthChecker = ({ children }: { children: React.ReactNode }) => {
 
             {isLoading ? (
                 <div>Loading...</div>
-            ) : IsLayoutNeeded ? (
-                <Layout>
+            ) : 
+            IsLayoutNeeded ? (
+                <LayOut>
                     {children}
-                </Layout>
+                </LayOut>
             ) : (
                 <div>
                     <React.Fragment>

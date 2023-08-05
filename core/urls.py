@@ -1,8 +1,10 @@
 from django.urls import  path
-from .views import BrachDropDownView, BranchesView, MenusView
+from .views import BrachDropDownView, BranchesView, MenusView, DistrictView, ProvinceView, LocalBodiesView
 
 urlpatterns = [
     path("branch/", BranchesView.as_view(), name='branches'),
     path("branch-dropdown/", BrachDropDownView.as_view(), name='branche_dropdown'),
-    path("menus/", MenusView.as_view(), name='menus'),
+    path("provinces/", ProvinceView.as_view(), name='provinces'),
+    path("districts/", DistrictView.as_view(), name='districts'),
+    path("localbodies/", LocalBodiesView.as_view(), name='localbodies'),
 ]

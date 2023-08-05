@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework", 
     "corsheaders",
     "rest_framework_simplejwt",
     "authentication",
@@ -55,15 +56,7 @@ INSTALLED_APPS = [
     "staff"
 ]
 
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_NAME = 'sessionid'  
-SESSION_COOKIE_HTTPONLY = True      
-SESSION_COOKIE_SAMESITE = 'None'  
-SESSION_COOKIE_SECURE = True     
 
-
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = True
 
 
 REST_FRAMEWORK = {
@@ -72,7 +65,10 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'authentication.authentication.CustomAuthentication',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
+
 }
 
 SIMPLE_JWT = {
@@ -88,7 +84,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'authentication.middlewares.LoggedInBranchMiddleware', 
+    'authentication.middlewares.LoggedInBranchMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 
@@ -182,5 +178,16 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-CORS_ALLOW_CREDENTIALS =  True
-CORS_ALLOW_ALL_ORIGINS =  True
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_NAME = 'sessionid'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+
+
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = True
+
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True

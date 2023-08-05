@@ -1,3 +1,52 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    max-height: 100px;
+  }
+  ::-webkit-scrollbar:hover {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track:hover {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 9px;
+    transition: 2ms, all, ease;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: grey;
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #05b4e1;
+    width: 10px;
+  }
+
+
+  .date-picker-input {
+    padding: 6px 5px  ;
+    width: 100%;
+    border: 1px solid #a8a8a8ae;
+    font-size: small;
+
+  }
+
+  .date-picker-input:focus-visible {
+    outline: none;
+    border: 1px solid #4ea5f6d8;
+    z-index: 1;
+    transition: all 0.25s;
+    box-shadow: 0 0 0.5px 0.5px;
+    
+  }

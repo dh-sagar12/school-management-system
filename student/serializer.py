@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from  .models import *
+from django.db.models import Max
+
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -60,17 +62,22 @@ class RegisterNewStudentSerializer(serializers.Serializer):
     student  =  serializers.DictField()
     student_contact =  serializers.ListField()
     student_addresses =  serializers.ListField()
-    student_class =  serializers.DictField()  
+    # student_class =  serializers.DictField()  
 
     class Meta:
-        fields  =  ("student", 'student_contact', 'student_addresses', 'student_class')
+        fields  =  ("student", 'student_contact', 'student_addresses')
+
+    def get_new_student_id(self):
+        max_student_id  =  StudentModel.objects.aggregate(Max('student_id'))['student_id__max']
+        print('max_student_id', max_student_id)
+        return max_student_id + 1
 
 
     def create(self, validated_data):
         student_data  =  validated_data.pop('student') 
         student_contact  =  validated_data.pop('student_contact')  
         student_addresses  =  validated_data.pop('student_addresses')  
-        student_class  =  validated_data.pop('student_class') 
+        # student_class  =  validated_data.pop('student_class') 
 
         if student_data.get('id') is not None and student_data.get('id') > 0:
             
@@ -82,12 +89,12 @@ class RegisterNewStudentSerializer(serializers.Serializer):
             student_data_serializer.is_valid(raise_exception=True)
             student_data_serializer.save()
 
-            # updating class model with new data if data contains id 
+            # # updating class model with new data if data contains id 
 
-            student_class_instance  =  StudentClassModel.objects.get(id = student_class.get('id') )
-            student_class_serializer =  StudentClassSerializer(student_class_instance, data=student_class, partial= True)
-            student_class_serializer.is_valid(raise_exception=True)
-            student_class_serializer.save()
+            # student_class_instance  =  StudentClassModel.objects.get(id = student_class.get('id') )
+            # student_class_serializer =  StudentClassSerializer(student_class_instance, data=student_class, partial= True)
+            # student_class_serializer.is_valid(raise_exception=True)
+            # student_class_serializer.save()
 
             # Create new address if not have id and if id then update accordingly 
             return_address_data = []
@@ -131,8 +138,8 @@ class RegisterNewStudentSerializer(serializers.Serializer):
             return {
                     'student': student_data_serializer.data, 
                     'student_contact':return_contact_data, 
-                    'student_addresses': return_address_data, 
-                    'student_class': student_class_serializer.data
+                    'student_addresses': return_address_data
+                    # 'student_class': student_class_serializer.data
                 }
 
 
@@ -140,16 +147,17 @@ class RegisterNewStudentSerializer(serializers.Serializer):
         else:
         # for student instance 
             student_data['created_by'] =  self.context['request'].user.id
+            student_data['student_id'] =  self.get_new_student_id()
             serialized_student =   StudentSerializer(data= student_data)
             serialized_student.is_valid(raise_exception=True)
             serialized_student.save()
 
             #for student classes 
-            student_class['created_by'] =  self.context['request'].user.id
-            student_class['student_id'] =  serialized_student.data['id']
-            serialized_student_class  =  StudentClassSerializer(data= student_class)
-            serialized_student_class.is_valid(raise_exception=True)
-            serialized_student_class.save()
+            # student_class['created_by'] =  self.context['request'].user.id
+            # student_class['student_id'] =  serialized_student.data['id']
+            # serialized_student_class  =  StudentClassSerializer(data= student_class)
+            # serialized_student_class.is_valid(raise_exception=True)
+            # serialized_student_class.save()
             
 
             # for student address
@@ -175,6 +183,6 @@ class RegisterNewStudentSerializer(serializers.Serializer):
             return {
                     'student': serialized_student.data, 
                     'student_contact':return_contact_data, 
-                    'student_addresses': return_address_data, 
-                    'student_class': serialized_student_class.data
+                    'student_addresses': return_address_data 
+                    # 'student_class': serialized_student_class.data
                 }

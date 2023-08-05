@@ -2,8 +2,8 @@
 
 'use client'
 
-import { UserInfo } from '@/authTypes';
-import { BranchView } from '@/coreTypes';
+import { UserInfo } from '@/authentication/authTypes';
+import { BranchView } from '@/core/coreTypes';
 import { ReactNode, createContext, useContext, useState } from 'react';
 
 interface AuthContextProps {

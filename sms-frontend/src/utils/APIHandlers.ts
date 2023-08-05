@@ -59,6 +59,22 @@ class ApiHandler {
     }
   }
 
+  async promises(urls: string[]) {
+    try {
+      // Create an array of promises for each URL
+      const promises = urls.map((url) => api.get(url));
+
+      // Use axios.all() to resolve all promises simultaneously
+      const responses = await axios.all(promises);
+
+      // Extract and return the response data from each resolved promise
+      return responses.map((response) => response.data);
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+
   // Handle API errors
   handleError(error: any) {
     // console.log('error', error);

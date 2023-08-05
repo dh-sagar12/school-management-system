@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from authentication.authentication import CustomAuthentication
-from core.models import BranchModel, MenuModel
-from core.serializers import BranchDropDownSerilizer, BranchSerializer, MenuSerializer
+from core.models import BranchModel, DistrictModel, LocalBodiesModel, MenuModel, ProvincesModel
+from core.serializers import BranchDropDownSerilizer, BranchSerializer, DistrictSerializer, LocalBodiesSerializer, MenuSerializer, ProvinceSerializer
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
@@ -75,3 +75,54 @@ class MenusView(APIView):
 
 
         
+
+class ProvinceView(APIView):
+    authentication_classes  =  [CustomAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request):
+        id =  request.data.get('id')
+        if id is not None  :
+            province_instance  =  ProvincesModel.objects.get(id=id)
+            serializer =  ProvinceSerializer(province_instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            province_instance  =  ProvincesModel.objects.all()
+            serializer =  ProvinceSerializer(province_instance, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+class DistrictView(APIView):
+    authentication_classes  =  [CustomAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request):
+        id =  request.data.get('id')
+        if id is not None  :
+            district_instance  =  DistrictModel.objects.get(id=id)
+            serializer =  DistrictSerializer(district_instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            district_instance  =  DistrictModel.objects.all()
+            serializer =  DistrictSerializer(district_instance, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class LocalBodiesView(APIView):
+    authentication_classes  =  [CustomAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request):
+        id =  request.data.get('id')
+        if id is not None  :
+            localbodies_instance  =  LocalBodiesModel.objects.get(id=id)
+            serializer =  LocalBodiesSerializer(localbodies_instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            localbodies_instance  =  LocalBodiesModel.objects.all()
+            serializer =  LocalBodiesSerializer(localbodies_instance, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)

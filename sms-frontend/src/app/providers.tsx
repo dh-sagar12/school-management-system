@@ -2,22 +2,10 @@
 'use client'
 
 import { AuthContextProvider } from '@/Context/AuthContext'
-import { CacheProvider } from '@chakra-ui/next-js'
-import { ChakraProvider } from '@chakra-ui/react'
-import { extendTheme } from '@chakra-ui/react'
-import React, { Suspense, useState } from 'react'
+import { App, ConfigProvider } from 'antd';
+import theme from '@/utils/themeCofig';
 
 
-// const colors = {
-//     brand: {
-//       900: '#1a365d',
-//       800: '#153e75',
-//       700: '#2a69ac',
-//     },
-//   }
-
-
-// export const theme = extendTheme({ colors })
 export function Providers({
   children
 }: {
@@ -25,11 +13,17 @@ export function Providers({
 }) {
   return (
     <AuthContextProvider>
-      <CacheProvider>
-        <ChakraProvider toastOptions={{ defaultOptions: { position: 'top' } }} >
+      <ConfigProvider theme={theme}>
+        {/* <CacheProvider> */}
+        {/* <ChakraProvider toastOptions={{ defaultOptions: { position: 'top' } }} > */}
+        <App notification={{ placement: 'bottomRight' }}>
+
           {children}
-        </ChakraProvider>
-      </CacheProvider>
+        </App>
+
+        {/* </ChakraProvider> */}
+        {/* </CacheProvider> */}
+      </ConfigProvider>
     </AuthContextProvider>
 
   )

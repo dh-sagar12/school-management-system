@@ -2,6 +2,9 @@ from django.db import models
 from authentication.models import User
 from rest_framework.exceptions import ValidationError
 from rest_framework import status
+from django.db.models import Max
+from django.db import connection
+
 # Create your models here.
 
 
@@ -144,3 +147,67 @@ class AcademicYearModel(models.Model):
         return self.ac_year_name
 
 
+
+
+class NepaliDateModel(models.Model):
+    year_id  =  models.IntegerField(null=False, blank=False, db_column='year_id')
+    month_id  =  models.IntegerField(null=False, blank=False, db_column='month_id')
+    day_id  =  models.IntegerField(null=False, blank=False, db_column='day_id')
+    start_date  =  models.DateField(null=False, blank=False, db_column='start_date')
+    end_date  =  models.DateField(null=False, blank=False, db_column='end_date')
+
+
+    class Meta:
+        verbose_name = "Nepali Date"
+        verbose_name_plural = "Nepali Dates"   
+        db_table =   'core"."nepali_dates'  
+
+
+    def convert_ad_to_np(self, ad_date):
+        with connection.cursor() as cursor:
+            cursor.callproc('core.date_np', [ad_date])
+            result = cursor.fetchone()[0]
+        return result
+    
+    def convert_np_to_ad(self, np_date):
+        with connection.cursor() as cursor:
+            cursor.callproc('core.date_ad', [np_date])
+            result = cursor.fetchone()[0]
+        return result
+
+
+    def __str__(self):
+        return f"{self.year_id}"
+
+
+
+    
+
+class DayOperationsModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    value_date =  models.DateField(null=False,blank=False)
+    is_completed =  models.BooleanField(null=False, default=False)
+    eod_by  = models.ForeignKey(User, on_delete=models.DO_NOTHING,  null=True, blank=False, db_column='eod_by')
+    eod_on =  models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
+
+
+
+    class Meta:
+        verbose_name = "Day Operation"
+        verbose_name_plural = "Day Operations"   
+        db_table =   'core"."day_operation'  
+
+    def __str__(self):
+        return f"{self.value_date}"
+
+
+    def get_today_date(self):
+        today_date  =  DayOperationsModel.objects.get(is_completed =  False).value_date
+        return today_date
+
+    def get_today_np(self):
+        today_ad  =  self.get_today_date(self)
+        with connection.cursor() as cursor:
+            cursor.callproc('core.date_np', [today_ad])
+            result = cursor.fetchone()[0]
+        return result

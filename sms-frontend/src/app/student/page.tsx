@@ -1,8 +1,22 @@
+import StudentHome from '@/components/Students/StudentHome'
+import APIHandlers from '@/utils/APIHandlers'
 import React from 'react'
 
-const Student = () => {
+const Student = async () => {
+
+
+  const students = await APIHandlers.post('/api/student/filter/', {query: ''})
+  
+
+  
+
   return (
-    <div>Student</div>
+    <div>
+        <StudentHome Students={students}/>
+        
+
+    </div>
+
   )
 }
 
