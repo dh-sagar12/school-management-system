@@ -15,7 +15,7 @@ const AuthChecker =  ({ children }: { children: React.ReactNode }) => {
     const [IsLayoutNeeded, setIsLayoutNeeded] = useState(false)
     const [isLoading, setisLoading] = useState(true)
 
-    const { setBranch, setUser, setAuthenticated } = useContext(AuthContext)
+    const { setBranch, setUser, setAuthenticated, setTodayDateAd, setTodayDateNP } = useContext(AuthContext)
 
 
     useEffect(() => {
@@ -31,8 +31,10 @@ const AuthChecker =  ({ children }: { children: React.ReactNode }) => {
                     setUser(response.user)
                     setBranch(response.branch)
                     setAuthenticated(true)
+                    setTodayDateNP(response.today_np)
+                    setTodayDateAd(response.today_ad)
                     setisLoading(false)
-
+                    
                 }
 
             }).catch(error => {

@@ -237,7 +237,7 @@ const StudentAddressForm = (prop: Props) => {
 
             </Form>
 
-            <Divider />
+            <Divider className='border-purple-700'/>
 
        
 

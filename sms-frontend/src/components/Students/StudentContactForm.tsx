@@ -174,7 +174,7 @@ const StudentContactForm = (prop: Props) => {
 
             </Form>
 
-            <Divider />
+            <Divider className='border-purple-700' />
 
             {
                 prop.StudentContacts.length > 0 ?

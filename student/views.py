@@ -69,7 +69,7 @@ class SearchStudentView(APIView):
     def search_student(slef, keyword):
         queryset = StudentModel.objects.filter(
             Q(student_id__icontains=keyword) | Q(first_name__icontains=keyword)
-        )
+        ).order_by('-student_id')
         return queryset
 
     def post(self, request):

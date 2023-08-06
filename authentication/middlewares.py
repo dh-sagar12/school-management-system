@@ -27,8 +27,11 @@ class LoggedInBranchMiddleware:
             user = authenticate(email=email, password=password)
             if user and branch_id is not None:
                 today_np =  DayOperationsModel.get_today_np(self=DayOperationsModel)
+                today_ad  = str(DayOperationsModel.get_today_date(self =  DayOperationsModel))
+                print('today_ad', today_ad)
                 request.session['branch'] = branch_id
                 request.session['today_np'] =  today_np
+                request.session['today_ad'] =  today_ad
 
         response = self.get_response(request)
         return response

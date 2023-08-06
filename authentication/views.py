@@ -77,6 +77,7 @@ class InitAuthorizeUserBranchView(APIView):
             user_instance = User.objects.get(id=request.user.id)
             request_branch = request.session.get('branch')
             today_np  = request.session.get('today_np')
+            today_ad  = request.session.get('today_ad')
             print('request+_branch' , request_branch)
             if user_instance is not None and request_branch is not None:
 
@@ -94,7 +95,8 @@ class InitAuthorizeUserBranchView(APIView):
                         'user': user_serializer.data,
                         'access': token['access'],
                         'branch': branch_serilizer.data, 
-                        'today_np': today_np
+                        'today_np': today_np, 
+                        'today_ad':today_ad
                     }, status=status.HTTP_200_OK)
 
             return Response({'error': 'Un-Authorized'}, status=status.HTTP_401_UNAUTHORIZED)

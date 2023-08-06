@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Button,
     Card,
@@ -20,6 +20,9 @@ import APIHandlers from '@/utils/APIHandlers';
 import StudentContactForm from './StudentContactForm';
 import { DistrictModel, LocalBodiesModel, StateModel } from '@/core/coreTypes';
 import { useRouter } from 'next/navigation';
+import { AuthContext } from '@/Context/AuthContext';
+import dayjs from 'dayjs';
+
 
 const AddStudentForm = () => {
 
@@ -39,7 +42,8 @@ const AddStudentForm = () => {
     const [States, setStates] = useState<StateModel[]>([])
     const [Districts, setDistricts] = useState<DistrictModel[]>([])
     const [LocalBodies, setLocalBodies] = useState<LocalBodiesModel[]>([])
-    const [PageSubmitting, setPageSubmitting] = useState<boolean>(false)
+    const [PageSubmitting, setPageSubmitting] = useState<boolean>(false)    
+    const { today_date } = useContext(AuthContext)
 
     useEffect(() => {
 
@@ -119,6 +123,7 @@ const AddStudentForm = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                     layout='vertical'
+                    initialValues={{introduced_on: dayjs(today_date?.today_date_ad) } }
                 >
                     <Row gutter={{
                         xs: 8,
