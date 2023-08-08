@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 
-from core.models import BranchModel, DistrictModel, LocalBodiesModel, MenuModel, ProvincesModel
+from core.models import AttachmentModel, BranchModel, DistrictModel, LocalBodiesModel, MenuModel, ProvincesModel
 
 
 class BranchSerializer(ModelSerializer):
@@ -59,3 +59,19 @@ class LocalBodiesSerializer(ModelSerializer):
     class Meta:
         model = LocalBodiesModel
         fields = '__all__'
+
+
+
+class AttachmentSerializer(ModelSerializer):
+
+    class Meta:
+        model  = AttachmentModel
+        fields = '__all__'
+    
+
+class TempAttachmentSerializer(serializers.Serializer):
+    original_file_name  =  serializers.CharField()
+    file_name =  serializers.CharField()
+
+    class Meta:
+        fields  =  ("original_file_name", 'file_name')

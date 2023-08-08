@@ -12,12 +12,12 @@ const Sidebar = () => {
     } = theme.useToken();
 
     return (
-        <div className='h-screen overflow-y-scroll'>
+        <div className=' max-h-screen overflow-y-scroll'>
             <div className='text-purple-700 p-5 m-3 border border-purple-700'>box</div>
             <Menu
                 mode="inline"
                 defaultSelectedKeys={['1']}
-                className='flex flex-col space-y-10  py-5 ' 
+                className=' ' 
                 items={[
                     {
                         key: '1',

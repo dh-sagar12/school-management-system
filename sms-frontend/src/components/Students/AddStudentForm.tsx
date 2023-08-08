@@ -11,6 +11,7 @@ import {
     Input,
     Row,
     Select,
+    Space,
     message,
 } from 'antd';
 import CustomDatePicker from '@/helpers/DatePicker';
@@ -42,7 +43,7 @@ const AddStudentForm = () => {
     const [States, setStates] = useState<StateModel[]>([])
     const [Districts, setDistricts] = useState<DistrictModel[]>([])
     const [LocalBodies, setLocalBodies] = useState<LocalBodiesModel[]>([])
-    const [PageSubmitting, setPageSubmitting] = useState<boolean>(false)    
+    const [PageSubmitting, setPageSubmitting] = useState<boolean>(false)
     const { today_date } = useContext(AuthContext)
 
     useEffect(() => {
@@ -71,23 +72,23 @@ const AddStudentForm = () => {
 
         // let proper_values = { ...values, introduced_on: introduced_on, date_of_birth: date_of_birth }
 
-        let request_student_data : AddNewStudentForm = {
-            student: { ...values, introduced_on: introduced_on, date_of_birth: date_of_birth }, 
-            student_addresses: StudentAddress, 
+        let request_student_data: AddNewStudentForm = {
+            student: { ...values, introduced_on: introduced_on, date_of_birth: date_of_birth },
+            student_addresses: StudentAddress,
             student_contact: StudentContacts
         }
         console.log('Received values of form: ', request_student_data);
-        APIHandlers.post('/api/student/student/', request_student_data).then((response)=> {
+        APIHandlers.post('/api/student/student/', request_student_data).then((response) => {
             setPageSubmitting(true)
             message.success('New Student Added Successfully')
             router.push('/student/')
             form.resetFields()
 
-        }).catch(error=>{
+        }).catch(error => {
             message.error(error?.message)
             setPageSubmitting(false)
-            
-            
+
+
         })
     };
 
@@ -123,7 +124,7 @@ const AddStudentForm = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                     layout='vertical'
-                    initialValues={{introduced_on: dayjs(today_date?.today_date_ad) } }
+                    initialValues={{ introduced_on: dayjs(today_date?.today_date_ad) }}
                 >
                     <Row gutter={{
                         xs: 8,
@@ -329,11 +330,22 @@ const AddStudentForm = () => {
 
                 <StudentContactForm StudentContacts={StudentContacts} setStudentContacts={setStudentContacts} />
 
-                <Form.Item label=" " colon={false}>
-                    <Button type="primary" htmlType="submit" onClick={HandleFormSubmit} className='bg-purple-700' loading={PageSubmitting} >
-                        Submit
-                    </Button>
-                </Form.Item>
+
+                <Space size={'middle'}>
+                    <Form.Item label=" " colon={false}>
+                        <Button type="primary" htmlType="submit" onClick={HandleFormSubmit} className='bg-purple-700' loading={PageSubmitting} >
+                            Submit
+                        </Button>
+                    </Form.Item>
+                    <Form.Item label=" " colon={false}>
+
+                        <Button  htmlType="button" onClick={() => { router.push('/student/') }} className='bg-gray-300' loading={PageSubmitting} >
+                            
+                            Cancel
+                        </Button>
+                    </Form.Item>
+
+                </Space>
 
             </Card>
         </ >

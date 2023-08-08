@@ -30,21 +30,24 @@ const StudentHome = (props: Props) => {
     const pathname = usePathname()
 
 
-
     const fetchNextStudentPage = () => {
         APIHandlers.post(NextReqData?.next, { query: query }).then(data => {
             console.log(data);
 
+
+            setNextReqData({...NextReqData, 
+                count: data?.count,
+                next: data?.next,
+                previous: data?.previous
+            })
+
+            
             setInfineScrollStudentData((preval: any) => {
 
                 return preval.concat(data.results)
 
             })
-            setNextReqData({
-                count: data?.count,
-                next: data?.next,
-                previous: data?.previous
-            })
+        
 
         }).catch(error => {
             if (error?.status == 401) {
@@ -101,25 +104,16 @@ const StudentHome = (props: Props) => {
                 dataLength={InfineScrollStudentData.length} //This is important field to render the next data
                 next={() => fetchNextStudentPage()}
                 hasMore={NextReqData.next !== null}
-                loader={<p className='text-center'><AiOutlineLoading className={'animate-spin text-center mx-auto text-2xl m-2'} /></p>}
+                loader={<div className='text-center'><AiOutlineLoading className={'animate-spin text-center mx-auto text-2xl m-2'} /></div>}
                 endMessage={
-                    <p style={{ textAlign: 'center' }}>
+                    <div style={{ textAlign: 'center' }}>
                         <div>
                             <h4>No More Item To Show</h4>
                         </div>
-                    </p>
+                    </div>
                 }
                 style={{ height: '100%', overflow: 'hidden' }}
-            // below props only if you need pull down functionality
-            // // refreshFunction={}
-            // pullDownToRefresh
-            // pullDownToRefreshThreshold={50}
-            // pullDownToRefreshContent={
-            //     <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-            // }
-            // releaseToRefreshContent={
-            //     <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-            // }
+     
             >
                 <Row gutter={[30, 30]}>
                     {

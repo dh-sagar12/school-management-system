@@ -38,7 +38,7 @@ export default function LayOut(
     textAlign: 'center',
     color: '#7F2BC9',
     backgroundColor: '#0000',
-    height: '10px',
+    height: '8px',
     fontWeight: 'bold',
     display: 'flex',
     justifyContent: 'center',
@@ -49,34 +49,6 @@ export default function LayOut(
 
   return (
     <>
-
-
-      {/* <div className='flex'>
-        <Sidebar />
-        <div className='w-full'>
-          <div className='py-5 border-b-2 shadow-sm px-16 flex text-center items-center justify-between align-middle '>
-            <li className='list-none'>{branchmeta?.org_name}({branchmeta?.nick_name})</li>
-            <li className='list-none'>Friday, 6 Shrawan, 2080</li>
-            <li className='list-none'>{usermeta?.first_name} {usermeta?.last_name}</li>
-            <div className='flex space-x-4 '>
-              <IconButton
-                // size="lg"
-                variant="ghost"
-                icon={<FiBell />}
-                aria-label='open-menu'
-              />
-              <IconButton
-                // size="lg"
-                onClick={handleLogout}
-                variant="ghost"
-                icon={<FiLogOut />}
-                aria-label='open-menu'
-              />
-            </div>
-          </div>
-          {children}
-        </div>
-      </div> */}
 
       <Layout>
         <Sider style={siderStyle} trigger={null} collapsible collapsed={collapsed} >
@@ -89,7 +61,7 @@ export default function LayOut(
           <Content >
             {children}
           </Content>
-          <Footer style={footerStyle} className='border-t-2 '>
+          <Footer style={footerStyle} className='border-t-1 '>
             Copyright to Sagar Dhakal
           </Footer>
         </Layout>

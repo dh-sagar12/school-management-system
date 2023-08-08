@@ -211,3 +211,25 @@ class DayOperationsModel(models.Model):
             cursor.callproc('core.date_np', [today_ad])
             result = cursor.fetchone()[0]
         return result
+    
+
+
+
+class AttachmentModel(models.Model):
+    id  =models.BigAutoField(primary_key=True)
+    table_name =  models.CharField(max_length=50, null=False,blank=False)
+    table_id  =  models.BigIntegerField(null=False, blank=False)
+    attachment_type =  models.CharField(max_length=10, null=False, blank=False)
+    original_file_name =  models.CharField(max_length=100, blank=False, null=False)
+    file_name  =  models.CharField(max_length=500, null=False, blank=False)
+    is_active = models.BooleanField(default=True, null=False)
+    created_on  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Attachment"
+        verbose_name_plural = "Attachments"   
+        db_table =   'core"."attachments'  
+
+    def __str__(self):
+        return f"{self.table_name}-{self.table_id}"
+
