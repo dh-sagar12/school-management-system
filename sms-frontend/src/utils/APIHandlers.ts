@@ -43,7 +43,7 @@ class ApiHandler {
 
   
   // POST request with file upload
-  async postWithFile(url: string, data: object, file: string | Blob | RcFile) {
+  async postWithFile(url: string, data: object, file: string | Blob | RcFile, config: object) {
     try {
       // Create a FormData object to handle the file upload
       const formData = new FormData();
@@ -60,6 +60,7 @@ class ApiHandler {
         headers: {
           'Content-Type': 'multipart/form-data', // Set the content type for file upload
         },
+        ...config
       });
 
       return response.data;

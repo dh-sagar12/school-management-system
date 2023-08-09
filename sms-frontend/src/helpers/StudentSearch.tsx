@@ -11,8 +11,8 @@ interface Props {
     allowClear?: boolean,
     placeholder?: string | 'Search Student',
     style?: object,
-    value: string | undefined,
-    setValue: React.Dispatch<React.SetStateAction<string | undefined>>,
+    value: string,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
     notFoundContent?: React.ReactNode,
     className?: string,
 }
@@ -36,8 +36,7 @@ const fetch = (value: string, callback: Function) => {
         APIHandlers.post('api/student/filter/', { query: value }).then(response => {
             if (currentValue === value) {
                 const { results } = response;
-                console.log(results);
-                
+
 
                 const data = results.map((item: any) => ({
                     value: item.id,
@@ -102,7 +101,7 @@ const StudentSearch = (props: Props) => {
                 placeholder={props.placeholder}
                 style={props.style ?? { minWidth: '20vw', maxWidth: '25vw' }}
                 defaultActiveFirstOption={false}
-                suffixIcon={ Loading ?   <AiOutlineLoading className= 'animate-spin' /> : null}
+                suffixIcon={Loading ? <AiOutlineLoading className='animate-spin' /> : null}
                 filterOption={false}
                 onSearch={handleSearch}
                 onChange={handleChange}
@@ -114,7 +113,13 @@ const StudentSearch = (props: Props) => {
             />
             {
                 SelectedStudent !== undefined ?
-                    <p className='text-xs text-purple-700 cursor-pointer px-2 font-semibold'>Student Id: {SelectedStudent?.student.student_id} </p> : <React.Fragment></React.Fragment>
+                    <div>
+                        <a className='text-xs text-purple-700  px-2 font-semibold '>
+                            Student Id: {SelectedStudent?.student.student_id}
+                        </a>
+                    </div>
+
+                    : <React.Fragment></React.Fragment>
             }
         </>
     )

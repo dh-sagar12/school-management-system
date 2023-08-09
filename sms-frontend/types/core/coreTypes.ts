@@ -43,9 +43,21 @@ export interface DistrictModel {
 
 
 export interface LocalBodiesModel {
-        id: number, 
-        district_id: number, 
-        local_body_name: string, 
-        local_body_name_np: string, 
-        local_body_type: string, 
+        id: number,
+        district_id: number,
+        local_body_name: string,
+        local_body_name_np: string,
+        local_body_type: string,
+}
+
+
+
+export interface AttachmentModel {
+        id?: number, 
+        table_name: string, 
+        table_id: number , 
+        attachment_type: string, 
+        original_file_name: string, 
+        file_name: string, 
+        is_active: boolean, 
 }

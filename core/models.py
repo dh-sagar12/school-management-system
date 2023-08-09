@@ -219,7 +219,7 @@ class AttachmentModel(models.Model):
     id  =models.BigAutoField(primary_key=True)
     table_name =  models.CharField(max_length=50, null=False,blank=False)
     table_id  =  models.BigIntegerField(null=False, blank=False)
-    attachment_type =  models.CharField(max_length=10, null=False, blank=False)
+    attachment_type =  models.CharField(max_length=50, null=False, blank=False)
     original_file_name =  models.CharField(max_length=100, blank=False, null=False)
     file_name  =  models.CharField(max_length=500, null=False, blank=False)
     is_active = models.BooleanField(default=True, null=False)

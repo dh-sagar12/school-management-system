@@ -145,7 +145,8 @@ class AttachmentView(APIView):
                     os.remove(
                         f'Resources/Temp/{validated_data.get("file_name")}')
                     serializer.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    host_url = request.build_absolute_uri("/Resources/Images")
+                    return Response({**serializer.data, 'host_url': host_url}, status=status.HTTP_201_CREATED)
 
                 except Exception as e:
                     return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
