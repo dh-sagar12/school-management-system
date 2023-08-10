@@ -34,6 +34,7 @@ const UploadAttachmentsPage = () => {
 
     useEffect(() => {
         setAttachmentModel({ ...AttachmentModel, table_id: parseInt(value) })
+        APIHandlers.get('/api/')
 
     }, [value])
 
