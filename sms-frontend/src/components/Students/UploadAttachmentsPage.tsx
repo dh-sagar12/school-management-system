@@ -1,12 +1,11 @@
 'use client'
-import { Button, Card, Divider, Form, Input, InputRef, Select, Space, Upload, UploadProps, message } from 'antd'
+import { Button, Card, Col, Divider, Form, Input, InputRef, Row, Select, Space, Upload, message } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import StudentSearch from '@/helpers/StudentSearch';
-import Image from 'next/image'
 import { AiOutlinePlus, AiOutlineSave, AiOutlineUpload } from 'react-icons/ai';
 import APIHandlers from '@/utils/APIHandlers';
-import axios from 'axios';
 import { AttachmentModel } from '@/core/coreTypes';
+import { RxCross1 } from 'react-icons/rx'
 
 
 
@@ -58,7 +57,7 @@ const UploadAttachmentsPage = () => {
         };
 
         APIHandlers.postWithFile('/api/core/upload/temp/', {}, file, config).then(response => {
-            
+
             setAttachmentModel({ ...AttachmentModel, file_name: response.file_name, original_file_name: response.original_file_name, table_id: parseInt(value) })
             onSuccess('Ok')
             setPreviewImgURL(`${process.env.NEXT_PUBLIC_TEMP_RESOURCES_URL}/${response.file_name}`)
@@ -111,7 +110,7 @@ const UploadAttachmentsPage = () => {
 
             })
             setPreviewImgURL('/blankuser.png')
-            
+
 
 
         }).catch(err => {
@@ -126,7 +125,7 @@ const UploadAttachmentsPage = () => {
         <React.Fragment>
             <h2 className='text-xl font-bold text-blue-600 pb-3'>Upload Attachments</h2>
 
-            <Card style={{ maxWidth: '98%' }}>
+            <Card style={{ maxWidth: '98%' }} >
                 <Form layout='vertical'>
                     <Form.Item label="Student" colon={false}>
 
@@ -139,62 +138,141 @@ const UploadAttachmentsPage = () => {
 
                 <Divider className='border-purple-700 ' />
 
-                <Space>
-                    <Card className='shadow-md text-center'>
-                        <h2 className='text-center font-bold text-purple-600'>Choose Image</h2>
-                        <div className='p-3 '>
-                            <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                        </div>
-                        <div>
-                            <Upload multiple={false} customRequest={uploadImage} accept="image/*" name='original_file_name' withCredentials={true} >
-                                <Button icon={<AiOutlineUpload />}>Upload</Button>
-                            </Upload>
-                        </div>
-                        <div>
-                            <Select
-                                className='min-w-[300px] py-3'
-                                placeholder="custom dropdown render"
-                                allowClear={true}
-                                onChange={handleSelectChange}
-                                dropdownRender={(menu) => (
-                                    <>
-                                        {menu}
-                                        <Divider style={{ margin: '8px 0' }} />
-                                        <Space style={{ padding: '0 8px 4px' }}>
-                                            <Input
-                                                placeholder="Please enter item"
-                                                ref={inputRef}
-                                                value={name}
-                                                onChange={onNameChange}
+                <Row  wrap={true}>
+                    <Col span={6} >
+                        <Card className='shadow-md text-center w-[300px]'>
+                            <h2 className='text-center font-bold text-purple-600'>Choose Image</h2>
+                            <div className='p-3 '>
+                                <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                            </div>
+                            <div>
+                                <Upload multiple={false} customRequest={uploadImage} accept="image/*" name='original_file_name' withCredentials={true} >
+                                    <Button icon={<AiOutlineUpload />}>Upload</Button>
+                                </Upload>
+                            </div>
+                            <div>
+                                <Select
+                                    className='min-w-full py-3'
+                                    placeholder="custom dropdown render"
+                                    allowClear={true}
+                                    onChange={handleSelectChange}
+                                    dropdownRender={(menu) => (
+                                        <>
+                                            {menu}
+                                            <Divider style={{ margin: '8px 0' }} />
+                                            <Space style={{ padding: '0 8px 4px' }}>
+                                                <Input
+                                                    placeholder="Please enter item"
+                                                    ref={inputRef}
+                                                    value={name}
+                                                    onChange={onNameChange}
 
-                                            />
-                                            <Button type="text" icon={<AiOutlinePlus />} onClick={addItem} disabled={name.length == 0}>
-                                                Add
-                                            </Button>
-                                        </Space>
-                                    </>
-                                )}
-                                options={items.map((item) => ({ label: item, value: item }))}
-                            />
+                                                />
+                                                <Button type="text" icon={<AiOutlinePlus />} onClick={addItem} disabled={name.length == 0}>
+                                                    Add
+                                                </Button>
+                                            </Space>
+                                        </>
+                                    )}
+                                    options={items.map((item) => ({ label: item, value: item }))}
+                                />
 
-                        </div>
+                            </div>
 
-                        {
-                            (AttachmentModel?.table_id > 0 && AttachmentModel.attachment_type !== '') ?
+                            {
+                                (AttachmentModel?.table_id > 0 && AttachmentModel.attachment_type !== '') ?
 
-                                <Button type="primary" icon={<AiOutlineSave />} loading={Loading} className='bg-purple-700' onClick={handleSaveAttach}>
-                                    Save
+                                    <Button type="primary" icon={<AiOutlineSave />} loading={Loading} className='bg-purple-700' onClick={handleSaveAttach}>
+                                        Save
+                                    </Button>
+                                    :
+                                    <React.Fragment></React.Fragment>
+                            }
+
+
+                        </Card>
+                    </Col>
+
+                    <Col span={15} push={2} >
+                        <div className='grid grid-cols-3 flex-wrap'>
+                            <Card className='text-center col-span-1'>
+                                <div className='p-3 '>
+                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                                </div>
+                                <h2 className=' font-bold'>Avatar</h2>
+                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
+                                    Delete
                                 </Button>
-                                :
-                                <React.Fragment></React.Fragment>
-                        }
 
+                            </Card>
+                            <Card className='text-center col-span-1'>
+                                <div className='p-3 '>
+                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                                </div>
+                                <h2 className=' font-bold'>Avatar</h2>
+                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
+                                    Delete
+                                </Button>
 
-                    </Card>
+                            </Card>
+                            <Card className='text-center col-span-1'>
+                                <div className='p-3 '>
+                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                                </div>
+                                <h2 className=' font-bold'>Avatar</h2>
+                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
+                                    Delete
+                                </Button>
 
-                </Space>
+                            </Card>
+                            <Card className='text-center col-span-1'>
+                                <div className='p-3 '>
+                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                                </div>
+                                <h2 className=' font-bold'>Avatar</h2>
+                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
+                                    Delete
+                                </Button>
 
+                            </Card>
+                          
+                            <Card className='text-center col-span-1'>
+                                <div className='p-3 '>
+                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                                </div>
+                                <h2 className=' font-bold'>Avatar</h2>
+                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
+                                    Delete
+                                </Button>
 
+                            </Card>
+                          
+                            <Card className='text-center col-span-1'>
+                                <div className='p-3 '>
+                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                                </div>
+                                <h2 className=' font-bold'>Avatar</h2>
+                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
+                                    Delete
+                                </Button>
+
+                            </Card>
+                          
+                            <Card className='text-center col-span-1'>
+                                <div className='p-3 '>
+                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
+                                </div>
+                                <h2 className=' font-bold'>Avatar</h2>
+                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
+                                    Delete
+                                </Button>
+
+                            </Card>
+                          
+                        </div>
+                    </Col>
+
+                </Row>
 
             </Card>
         </React.Fragment>

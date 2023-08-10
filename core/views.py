@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from authentication.authentication import CustomAuthentication
-from core.models import BranchModel, DistrictModel, LocalBodiesModel, MenuModel, ProvincesModel
+from core.models import BranchModel, DistrictModel, LocalBodiesModel, MenuModel, ProvincesModel, AttachmentModel
 from core.serializers import AttachmentSerializer, BranchDropDownSerilizer, BranchSerializer, DistrictSerializer, LocalBodiesSerializer, MenuSerializer, ProvinceSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.core.files.storage import FileSystemStorage
@@ -154,6 +154,11 @@ class AttachmentView(APIView):
             else:
                 return Response({'error': 'File May be Renamed or Removed from original path'}, status=status.HTTP_204_NO_CONTENT)
 
+    
+    def get(self, request, table_id):
+        attachment_instance  =  AttachmentModel.objects.filter(table_id =  table_id, is_active=True)
+        serializer =  AttachmentSerializer(attachment_instance, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class TempAttachmentView(APIView):
     authentication_classes = [CustomAuthentication]

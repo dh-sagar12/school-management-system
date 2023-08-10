@@ -9,4 +9,5 @@ urlpatterns = [
     path("localbodies/", LocalBodiesView.as_view(), name='localbodies'),
     path("upload/", AttachmentView.as_view(), name='upload'),
     path("upload/temp/", TempAttachmentView.as_view(), name='tempupload'),
+    path("attachment/<int:table_id>/", AttachmentView.as_view(), name='getattachment'),
 ]
