@@ -108,7 +108,7 @@ class ApiHandler {
 
   // Handle API errors
   handleError(error: any) {
-    // console.log('error', error);
+    console.log('error', error);
     const error_response = {
       'message': error?.response?.data?.error ? error?.response?.data?.error : "Invalid Request",
       'status': error?.response?.status ? error?.response?.status : 400

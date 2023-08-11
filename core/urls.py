@@ -3,11 +3,12 @@ from .views import BrachDropDownView, BranchesView, MenusView, DistrictView, Pro
 
 urlpatterns = [
     path("branch/", BranchesView.as_view(), name='branches'),
-    path("branch-dropdown/", BrachDropDownView.as_view(), name='branche_dropdown'),
+    path("branch-dropdown/", BrachDropDownView.as_view(), name='branch_dropdown'),
     path("provinces/", ProvinceView.as_view(), name='provinces'),
     path("districts/", DistrictView.as_view(), name='districts'),
     path("localbodies/", LocalBodiesView.as_view(), name='localbodies'),
     path("upload/", AttachmentView.as_view(), name='upload'),
     path("upload/temp/", TempAttachmentView.as_view(), name='tempupload'),
-    path("attachment/<int:table_id>/", AttachmentView.as_view(), name='getattachment'),
+    path("attachment/<int:table_id>/", AttachmentView.as_view(), name='getAttachment'),
+    path("attachment/delete/<int:attachment_id>/", AttachmentView.as_view(), name='deleteAttachment'),
 ]

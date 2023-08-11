@@ -60,4 +60,5 @@ export interface AttachmentModel {
         original_file_name: string, 
         file_name: string, 
         is_active: boolean, 
+        created_on?: string 
 }

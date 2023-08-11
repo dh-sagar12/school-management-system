@@ -29,12 +29,28 @@ const UploadAttachmentsPage = () => {
     })
     const [items, setItems] = useState(['Avatar', 'Citizenship', 'BirthCertificate']);
     const [name, setName] = useState('');
+    const [StudentAttachmentDetail, setStudentAttachmentDetail] = useState<AttachmentModel[]>([])
+    const [TenatURL, setTenatURL] = useState<string>('')
+
     const inputRef = useRef<InputRef>(null);
 
 
     useEffect(() => {
         setAttachmentModel({ ...AttachmentModel, table_id: parseInt(value) })
-        APIHandlers.get('/api/')
+        if (value !== undefined) {
+
+            APIHandlers.get(`/api/core/attachment/${value}`).then(data => {
+                console.log(data);
+                setTenatURL(data.host_url)
+                setStudentAttachmentDetail(data.attachments)
+
+
+            }).catch(err => {
+                console.log(err);
+
+            })
+        }
+
 
     }, [value])
 
@@ -61,7 +77,7 @@ const UploadAttachmentsPage = () => {
 
             setAttachmentModel({ ...AttachmentModel, file_name: response.file_name, original_file_name: response.original_file_name, table_id: parseInt(value) })
             onSuccess('Ok')
-            setPreviewImgURL(`${process.env.NEXT_PUBLIC_TEMP_RESOURCES_URL}/${response.file_name}`)
+            setPreviewImgURL(`${response.temp_url}/${response.file_name}`)
 
 
         }).catch(err => {
@@ -100,25 +116,39 @@ const UploadAttachmentsPage = () => {
             console.log(response);
             message.success('Uploaded Successfully!!!')
             setLoading(false)
-            setValue('')
             setAttachmentModel({
                 table_name: 'student.students',
                 attachment_type: '',
                 file_name: '',
                 original_file_name: '',
                 is_active: true,
-                table_id: 0
+                table_id: parseInt(value)
 
             })
             setPreviewImgURL('/blankuser.png')
+            setStudentAttachmentDetail([...StudentAttachmentDetail, response])
 
 
 
         }).catch(err => {
+            console.log(err);
+            
             message.error(err?.message)
             setLoading(false)
 
 
+        })
+    }
+
+
+    const DeleteAttachment =  (attachment_id: any)=> {
+        APIHandlers.delete(`/api/core/attachment/delete/${attachment_id}`).then(response=>{
+            message.success('Deleted Successfully!!')
+            let filtered_attach = StudentAttachmentDetail.filter(item=> item.id  !== attachment_id)            
+            setStudentAttachmentDetail(filtered_attach)
+
+        }).catch(err=>{
+            message.error(err?.message)            
         })
     }
 
@@ -139,7 +169,7 @@ const UploadAttachmentsPage = () => {
 
                 <Divider className='border-purple-700 ' />
 
-                <Row  wrap={true}>
+                <Row wrap={true}>
                     <Col span={6} >
                         <Card className='shadow-md text-center w-[300px]'>
                             <h2 className='text-center font-bold text-purple-600'>Choose Image</h2>
@@ -194,84 +224,40 @@ const UploadAttachmentsPage = () => {
                         </Card>
                     </Col>
 
-                    <Col span={15} push={2} >
-                        <div className='grid grid-cols-3 flex-wrap'>
-                            <Card className='text-center col-span-1'>
-                                <div className='p-3 '>
-                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                                </div>
-                                <h2 className=' font-bold'>Avatar</h2>
-                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
-                                    Delete
-                                </Button>
 
-                            </Card>
-                            <Card className='text-center col-span-1'>
-                                <div className='p-3 '>
-                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                                </div>
-                                <h2 className=' font-bold'>Avatar</h2>
-                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
-                                    Delete
-                                </Button>
+                    {
 
-                            </Card>
-                            <Card className='text-center col-span-1'>
-                                <div className='p-3 '>
-                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                                </div>
-                                <h2 className=' font-bold'>Avatar</h2>
-                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
-                                    Delete
-                                </Button>
 
-                            </Card>
-                            <Card className='text-center col-span-1'>
-                                <div className='p-3 '>
-                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                                </div>
-                                <h2 className=' font-bold'>Avatar</h2>
-                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
-                                    Delete
-                                </Button>
+                        StudentAttachmentDetail.length > 0 ?
 
-                            </Card>
-                          
-                            <Card className='text-center col-span-1'>
-                                <div className='p-3 '>
-                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                                </div>
-                                <h2 className=' font-bold'>Avatar</h2>
-                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
-                                    Delete
-                                </Button>
+                            <Col span={15} push={2} >
+                                <div className='grid grid-cols-3 flex-wrap'>
+                                    {
 
-                            </Card>
-                          
-                            <Card className='text-center col-span-1'>
-                                <div className='p-3 '>
-                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                                </div>
-                                <h2 className=' font-bold'>Avatar</h2>
-                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
-                                    Delete
-                                </Button>
+                                        StudentAttachmentDetail.map(item => {
+                                            return (
+                                                <Card className='text-center col-span-1' key={item.id}>
+                                                    <div className='p-3 '>
+                                                        <img className='mx-auto' src={`${TenatURL}/${item.file_name}`} alt={''} width={200} height={500} ></img>
+                                                    </div>
+                                                    <h2 className=' font-bold'>{item.attachment_type}</h2>
+                                                    <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />} onClick={()=>DeleteAttachment(item.id)} >
+                                                        Delete
+                                                    </Button>
+                                                </Card>
+                                            )
 
-                            </Card>
-                          
-                            <Card className='text-center col-span-1'>
-                                <div className='p-3 '>
-                                    <img className='mx-auto' src={PreviewImgURL} alt={''} width={200} height={500} ></img>
-                                </div>
-                                <h2 className=' font-bold'>Avatar</h2>
-                                <Button type="link" danger className='flex justify-center items-center mx-auto' icon={<RxCross1 className='' />}>
-                                    Delete
-                                </Button>
+                                        })
+                                    }
 
-                            </Card>
-                          
-                        </div>
-                    </Col>
+
+                                </div>
+                            </Col>
+                            :
+                            <React.Fragment></React.Fragment>
+
+
+                    }
 
                 </Row>
 

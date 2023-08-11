@@ -124,6 +124,8 @@ class LocalBodiesView(APIView):
 
 
 class AttachmentView(APIView):
+    authentication_classes = [CustomAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = AttachmentSerializer(data=request.data)
@@ -158,7 +160,15 @@ class AttachmentView(APIView):
     def get(self, request, table_id):
         attachment_instance  =  AttachmentModel.objects.filter(table_id =  table_id, is_active=True)
         serializer =  AttachmentSerializer(attachment_instance, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        host_url = request.build_absolute_uri("/Resources/Images")
+        return Response({'attachments': serializer.data, 'host_url': host_url }, status=status.HTTP_200_OK)
+    
+    def delete(self, request, attachment_id):
+        attachment_instance =  AttachmentModel.objects.get(id  =  attachment_id)
+        file_name =  attachment_instance.get_file_name()
+        os.remove(f'Resources/Images/{file_name}')
+        attachment_instance.delete()
+        return Response({'message': 'sucess'}, status=status.HTTP_200_OK)
 
 class TempAttachmentView(APIView):
     authentication_classes = [CustomAuthentication]
@@ -172,8 +182,10 @@ class TempAttachmentView(APIView):
         file_name = f'{file_uuid}{file_extension}'
         fs = FileSystemStorage(location='Resources/Temp/')
         fs.save(file_name, files)
+        host_url = request.build_absolute_uri("/Resources/Temp")
         reponse = {
             'original_file_name': files.name,
-            'file_name': file_name
+            'file_name': file_name, 
+            'temp_url': host_url
         }
         return Response(reponse, status=status.HTTP_201_CREATED)

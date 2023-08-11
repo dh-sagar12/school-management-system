@@ -232,4 +232,8 @@ class AttachmentModel(models.Model):
 
     def __str__(self):
         return f"{self.table_name}-{self.table_id}"
+    
+
+    def get_file_name(self):
+        return self.file_name
 
