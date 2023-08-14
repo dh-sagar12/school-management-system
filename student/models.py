@@ -125,3 +125,26 @@ class StudentClassModel(models.Model):
 
     def __str__(self):
         return str(self.student_id)
+
+
+
+class StudentAdmissionViewModel(models.Model):
+    admission_date_ad =  models.DateField(auto_now=False)
+    admission_date =  models.CharField(max_length=50)
+    student_id = models.BigIntegerField()
+    student_name = models.CharField(max_length=100)
+    contact_number =  models.CharField(max_length=100)
+    class_name =  models.CharField(max_length=50)
+    faculty_name =  models.CharField(max_length=50)
+    course_name = models.CharField(max_length=100)
+
+    class Meta:
+        managed= False
+        db_table =  'student"."student_admission_view'
+        verbose_name = 'Student Admission View'
+        verbose_name_plural = 'Student Admission Views'
+
+
+    def __str__(self):
+        return self.student_name
+    

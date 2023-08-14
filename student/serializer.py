@@ -42,6 +42,15 @@ class StudentClassSerializer(serializers.ModelSerializer):
             'created_on': {'read_only': True}
         }
         
+class StudentAdmissionViewSerializer(serializers.ModelSerializer):
+    """ 
+        Contact with StudentAdmissionViewModel to retrive data from view in the postgres database
+    """
+
+    class Meta:
+        model =  StudentAdmissionViewModel
+        fields = '__all__'
+
 
 
 
@@ -57,6 +66,7 @@ class RegisterNewStudentSerializer(serializers.Serializer):
 
         Methods:
         - create(validated_data): Create a new student with associated contact, address, and class information.
+        - get_new_student_id(self): Generate New student Id for  every student created
     """
 
     student  =  serializers.DictField()

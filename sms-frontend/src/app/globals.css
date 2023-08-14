@@ -8,7 +8,7 @@
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
-    max-height: 100px;
+    max-height: 4px;
   }
   ::-webkit-scrollbar:hover {
     width: 5px;

@@ -59,3 +59,16 @@ export interface AddNewStudentForm {
     student_contact : StudentContactInfo[], 
     student_addresses : StudentAddress[]
 }
+
+
+export interface AdmissionGridView {
+id?: number, 
+admission_date_ad: Date | string, 
+admission_date: string, 
+student_id: number, 
+student_name: string, 
+contact_number: string, 
+class_name: string, 
+faculty_name: string, 
+course_name: string, 
+}

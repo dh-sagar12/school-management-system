@@ -82,3 +82,25 @@ class SearchStudentView(APIView):
         paginated_resp = self.pagination_class.get_paginated_response(
             serializer.data)
         return Response(paginated_resp.data, status=status.HTTP_200_OK)
+
+
+class StudentAdmissionGridView(APIView):
+    pagination_class = PageNumberPagination()
+    
+    def get(self, request):
+        admission_date =  request.data.get('admission_date')
+        if admission_date is not None:
+            queryset = StudentAdmissionViewModel.objects.filter(admission_date_ad = admission_date)
+        else:
+            queryset = StudentAdmissionViewModel.objects.all()
+        
+        paginated_queryset = self.pagination_class.paginate_queryset(
+            queryset, request)
+        serializer = StudentAdmissionViewSerializer(paginated_queryset, many=True)
+        
+        paginated_resp = self.pagination_class.get_paginated_response(
+            serializer.data)
+        
+        return Response(paginated_resp.data, status = status.HTTP_200_OK)
+        
+        

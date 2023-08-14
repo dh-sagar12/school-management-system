@@ -36,7 +36,10 @@ const UploadAttachmentsPage = () => {
 
 
     useEffect(() => {
-        setAttachmentModel({ ...AttachmentModel, table_id: parseInt(value) })
+        // setAttachmentModel({ ...AttachmentModel, table_id: parseInt(value) })
+        setAttachmentModel((preval)=>{
+            return {...preval, table_id:parseInt(value) }
+        })
         if (value !== undefined) {
 
             APIHandlers.get(`/api/core/attachment/${value}`).then(data => {
