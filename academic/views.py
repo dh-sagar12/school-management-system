@@ -94,12 +94,16 @@ class CoursesView(APIView):
     def get(self, request):
         data  =  CoursesModel.objects.all()
         serializer =  CoursesSerializer(data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)  
+        return Response(serializer.data, status=status.HTTP_200_OK) 
 
-    # def get(self, request):
-    #     menus  =  MenuModel.objects.all()
-    #     # print(menus)
-    #     serializer =  MenuSerializer(menus, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)      
-    
+
+
+class AcademicChargesView(APIView):
+
+
+    def post(self, request):
+        serializer = AcademicChargesSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'Success'}, status =  status.HTTP_201_CREATED)
 

@@ -39,8 +39,10 @@ class AcademicSectionModel(models.Model):
 
 
 class AcademicTypeModel(models.Model):
+    """ Semester, Annual , Trimester etc """
     id =  models.BigAutoField(primary_key=True)
     academic_type =  models.CharField(max_length=20, null=False, blank=False )
+    occurance_per_year = models.IntegerField(null=False, blank=False)
 
 
 
@@ -49,6 +51,9 @@ class AcademicTypeModel(models.Model):
         verbose_name = "Academic Type"
         verbose_name_plural = "Academic Types"
 
+    def __str__(self):
+        return self.academic_type
+    
 
 class FacultyModel(models.Model):
     id  = models.BigAutoField(primary_key=True)
@@ -89,6 +94,7 @@ class CoursesModel(models.Model):
     academic_type_id =  models.ForeignKey(AcademicTypeModel, null=False, on_delete=models.DO_NOTHING, db_column='academic_type_id')
     status  =  models.BooleanField(default=True, null=False)
     subjects  =  models.ManyToManyField(SubjectModel, db_column='subjects', related_name='courses')
+    course_duration  =  models.IntegerField(null=False, blank=False)
 
 
     class Meta:
@@ -99,4 +105,30 @@ class CoursesModel(models.Model):
 
     def __str__(self):
         return self.course_name
+    
+
+
+class AcademicChargesModel(models.Model):
+    id =  models.BigAutoField(primary_key=True)
+    class_id =  models.ForeignKey(AcademicClassModel, on_delete=models.DO_NOTHING, null=False, db_column='class_id')
+    course_id =  models.ForeignKey(CoursesModel, on_delete=models.DO_NOTHING, null=True, blank=True, db_column='course_id')
+    charge_code =  models.CharField(max_length=10, blank=False, null=False)
+    charge_name =  models.CharField(max_length=100, null=False, blank=False)
+    charge_amount = models.DecimalField(max_digits=5, decimal_places=2, null=False, blank=False)
+    is_active = models.BooleanField(null=False, blank=False, default=True)
+    academic_session_type = models.IntegerField(null=False, blank=False)
+    
+
+    class Meta:
+        db_table = 'academic"."charges'
+        verbose_name = 'Adacemic Charge'
+        verbose_name_plural = "Academic Charges"
+    
+
+    def __str__(self):
+        return self.charge_name
+
+
+
+    
     

@@ -55,3 +55,12 @@ class CoursesSerializer(serializers.ModelSerializer):
         model  =  CoursesModel
         fields  =  ("__all__")
         read_only_fields =  ['id']
+
+
+class AcademicChargesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        models =  AcademicChargesModel
+        fields = "__all__"
+        read_only_fields =  ['id']
+

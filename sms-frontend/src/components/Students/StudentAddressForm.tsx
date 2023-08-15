@@ -85,7 +85,7 @@ const StudentAddressForm = (prop: Props) => {
             key: 'district'
         },
 
-        {
+        {   
             title: 'Local Body',
             dataIndex: 'local_body',
             key: 'local_body'
@@ -127,9 +127,6 @@ const StudentAddressForm = (prop: Props) => {
                 onFinish={OnAddressFinish}
                 scrollToFirstError
                 layout='vertical'
-                initialValues={{
-                    address_type: 'Permanent'
-                }}
             >
 
                 <Row gutter={{
