@@ -78,7 +78,6 @@ class InitAuthorizeUserBranchView(APIView):
             request_branch = request.session.get('branch')
             today_np  = request.session.get('today_np')
             today_ad  = request.session.get('today_ad')
-            print('request+_branch' , request_branch)
             if user_instance is not None and request_branch is not None:
 
                 # for authenticated user

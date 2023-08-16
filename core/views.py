@@ -70,7 +70,6 @@ class MenusView(APIView):
 
     def get(self, request):
         menus = MenuModel.objects.all()
-        # print(menus)
         serializer = MenuSerializer(menus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

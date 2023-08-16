@@ -114,9 +114,9 @@ class AcademicChargesModel(models.Model):
     course_id =  models.ForeignKey(CoursesModel, on_delete=models.DO_NOTHING, null=True, blank=True, db_column='course_id')
     charge_code =  models.CharField(max_length=10, blank=False, null=False)
     charge_name =  models.CharField(max_length=100, null=False, blank=False)
-    charge_amount = models.DecimalField(max_digits=5, decimal_places=2, null=False, blank=False)
+    charge_amount = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
     is_active = models.BooleanField(null=False, blank=False, default=True)
-    academic_session_type = models.IntegerField(null=False, blank=False)
+    academic_session_type = models.IntegerField(null=True, blank=True)
     
 
     class Meta:

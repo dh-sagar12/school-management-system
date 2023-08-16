@@ -79,7 +79,6 @@ class RegisterNewStudentSerializer(serializers.Serializer):
 
     def get_new_student_id(self):
         max_student_id  =  StudentModel.objects.aggregate(Max('student_id'))['student_id__max']
-        print('max_student_id', max_student_id)
         return max_student_id + 1
 
 

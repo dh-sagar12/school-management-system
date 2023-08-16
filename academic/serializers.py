@@ -60,7 +60,26 @@ class CoursesSerializer(serializers.ModelSerializer):
 class AcademicChargesSerializer(serializers.ModelSerializer):
 
     class Meta:
-        models =  AcademicChargesModel
+        model =  AcademicChargesModel
         fields = "__all__"
         read_only_fields =  ['id']
+
+
+
+class BulkAcademicChargesSerializer(serializers.Serializer):
+    charges =  serializers.ListField()
+
+    class Meta:
+        fields  =  ("charges")
+
+    
+    def create(self, validated_data):
+        validated_charges = validated_data.pop('charges')
+        for item in validated_charges:
+            serialized_charge =  AcademicChargesSerializer(data=item)
+            serialized_charge.is_valid(raise_exception=True)
+            serialized_charge.save()
+        
+        return serialized_charge.data
+
 

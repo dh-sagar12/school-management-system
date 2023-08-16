@@ -44,12 +44,16 @@ class AcademicTypeView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message': 'Success'}, status =  status.HTTP_201_CREATED)
-    
-
+     
     def get(self, request):
-        data  =  AcademicTypeModel.objects.all()
-        serializer =  AcademicTypeSerializer(data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)        
+        request_id =  request.GET.get('id')
+        if request_id is not None:
+            data =  AcademicTypeModel.objects.get(id=request_id)
+            serializer =  AcademicTypeSerializer(data)
+        else:
+            data  =  AcademicTypeModel.objects.all()
+            serializer =  AcademicTypeSerializer(data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)       
     
 
 
@@ -92,17 +96,21 @@ class CoursesView(APIView):
     
 
     def get(self, request):
-        data  =  CoursesModel.objects.all()
-        serializer =  CoursesSerializer(data, many=True)
+        request_id =  request.GET.get('id')
+        if request_id is not None:
+            data =  CoursesModel.objects.get(id=request_id)
+            serializer =  CoursesSerializer(data)
+        else:
+            data  =  CoursesModel.objects.all()
+            serializer =  CoursesSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
 
 
 class AcademicChargesView(APIView):
 
-
     def post(self, request):
-        serializer = AcademicChargesSerializer(data=request.data)
+        serializer = BulkAcademicChargesSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message': 'Success'}, status =  status.HTTP_201_CREATED)
