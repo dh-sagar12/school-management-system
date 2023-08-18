@@ -1,10 +1,14 @@
 "use client"
-import { Card, Col, DatePicker, Form, Input, Row, Select } from 'antd'
+import { Button, Card, Col, DatePicker, Divider, Form, Input, Row, Select } from 'antd'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '@/Context/AuthContext';
 import dayjs from 'dayjs';
 import StudentSearch from '@/helpers/StudentSearch';
 import { ClassesModel, CoursesModel, FacultyModel } from '@/academic/academic';
+import getAcademicSession from '@/utils/AcademicSessionServices';
+import type { ColumnsType } from 'antd/es/table';
+import { Table } from '@chakra-ui/react';
+import ChargeTableForAdmission from './ChargeTableForAdmission';
 
 interface Props {
   ClassesModel: ClassesModel[]
@@ -15,6 +19,8 @@ interface Props {
 
 const StudentAdmissionForm = (prop: Props) => {
   const { today_date } = useContext(AuthContext)
+  const [AcademicSessionDropdown, setAcademicSessionDropdown] = useState<any>([])
+
 
 
   useEffect(() => {
@@ -62,6 +68,23 @@ const StudentAdmissionForm = (prop: Props) => {
   }
 
 
+  const OnChangeInCourse = async (value: number) => {
+    form.setFieldsValue({ academic_session_type: null })
+    let course = prop.Courses.filter(item => item.id == value)[0]
+    if (value > 0) {
+      let academic_session_dropdown_data = await getAcademicSession(course.course_duration, course.academic_type_id)
+      setAcademicSessionDropdown(academic_session_dropdown_data)
+    }
+
+
+
+  }
+
+
+  const fetchChargesData = () => {
+    console.log('fetching...');
+
+  }
 
 
 
@@ -168,26 +191,57 @@ const StudentAdmissionForm = (prop: Props) => {
                       <Select
                         placeholder="Course"
                         allowClear
+                        onChange={OnChangeInCourse}
                       >
                         {
-                          prop.FacultyModel.map(item => {
+                          prop.Courses.map(item => {
                             return (
-                              <Select.Option value={item.id} key={item.id}>{item.faculty_name}</Select.Option>
+                              <Select.Option value={item.id} key={item.id}>{item.course_name}</Select.Option>
                             )
                           })
                         }
                       </Select>
                     </Form.Item>
                   </Col>
+
+                  <Col xs={24} sm={12} md={6}>
+                    <Form.Item name="academic_session_type" label="Semester/Year" rules={[{ required: true }]}>
+                      <Select
+                        disabled={AcademicSessionDropdown.length == 0}
+                        placeholder="Semester/Year"
+                        allowClear
+                      >
+                        {
+                          AcademicSessionDropdown.map((item: any) => {
+                            return (
+                              <Select.Option value={item.key} key={item.key}>{item.value}</Select.Option>
+                            )
+                          })
+                        }
+                      </Select>
+                    </Form.Item>
+                  </Col>
+
+
+
+
                 </React.Fragment>
 
                 :
                 <React.Fragment></React.Fragment>
             }
-
+            <Col xs={24} sm={12} md={6}>
+              <Form.Item label=" " colon={false}>
+                <Button htmlType="button" className='text-purple-600 border-purple-700' onClick={fetchChargesData}>
+                  ShowData
+                </Button>
+              </Form.Item>
+            </Col>
           </Row>
 
-
+          <Divider className='border-purple-700' style={{ fontWeight: 'bold', color: '#922EC9', fontSize: '16px' }}>Charges</Divider>
+          
+          <ChargeTableForAdmission/>
 
         </Form>
       </Card>

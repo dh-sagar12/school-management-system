@@ -2,11 +2,10 @@
 import { ClassesModel, CoursesModel, AcademicSessionDropdown, ChargesModel } from '@/academic/academic'
 import APIHandlers from '@/utils/APIHandlers'
 import getAcademicSession from '@/utils/AcademicSessionServices'
-import { Button, Card, Col, Divider, Empty, Form, Input, InputNumber, Row, Select, Space, Table, message } from 'antd'
+import { Button, Card, Col, Divider, Empty, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Table, message } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlinePlus } from 'react-icons/ai'
 
 
 interface Props {
@@ -20,13 +19,19 @@ const ChargesSetup = (prop: Props) => {
     const [AcademicSessionDropdown, setAcademicSessionDropdown] = useState<any>([])
     const [ChargesPostData, setChargesPostData] = useState<ChargesModel[]>([])
     const [form] = Form.useForm();
-    const router = useRouter()
     const [PageSubmitting, setPageSubmitting] = useState(false)
+    const [confirmLoading, setConfirmLoading] = useState(false);
+
 
 
     const course_needed = ['Eleven', 'Twelve', 'Bachelor', 'Master']
 
     const handleChangeInClass = (value: number) => {
+        APIHandlers.get(`/api/academic/charges/${value}`).then(response => {
+            setChargesPostData(response)
+        }).catch(err => {
+            message.error(err.message)
+        })
 
         if (prop.ClassesModel.filter((item) => {
             return course_needed.some(elem => {
@@ -46,12 +51,16 @@ const ChargesSetup = (prop: Props) => {
     const OnChangeInCourse = async (value: number) => {
         form.setFieldsValue({ academic_session_type: null })
         let course = prop.CoursesModel.filter(item => item.id == value)[0]
-        let academic_session_dropdown_data = await getAcademicSession(course.course_duration, course.academic_type_id)
-        setAcademicSessionDropdown(academic_session_dropdown_data)
+        if (value > 0) {
+            let academic_session_dropdown_data = await getAcademicSession(course.course_duration, course.academic_type_id)
+            setAcademicSessionDropdown(academic_session_dropdown_data)
+        }
 
 
 
     }
+
+
 
 
     const formItemLayout = {
@@ -66,7 +75,6 @@ const ChargesSetup = (prop: Props) => {
     };
 
     const onFinish = (values: any) => {
-
         if (
             ChargesPostData.some(item => item.charge_code == values.charge_code) &&
             ChargesPostData.some(item => item.charge_name == values.charge_name) &&
@@ -143,24 +151,43 @@ const ChargesSetup = (prop: Props) => {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
-                <Space size="middle" className='text-purple-700'>
-                    <a><AiOutlineDelete onClick={() => DeleteContact(record)} /></a>
-                </Space>
+                <Popconfirm
+                    title="Sure To Delete?"
+                    description="It cannot be rollbacked!!"
+                    onConfirm={() => HandleDeleteCharge(record)}
+                    okButtonProps={{ loading: confirmLoading, className: 'bg-purple-700' }}
+                >
+                    <button><AiOutlineDelete /></button>
+                </Popconfirm>
             ),
         },
     ]
 
-    function DeleteContact(record: ChargesModel): void {
-        setChargesPostData(ChargesPostData.filter(item => item !==  record))
+    function HandleDeleteCharge(record: ChargesModel): void {
+        setConfirmLoading(true)
+        console.log(record);
+        if (record.id) {
+            APIHandlers.delete(`/api/academic/charges/delete/${record.id}`).then(response => {
+                message.success('Deleted Successfully!')
+            }).catch(err => {
+                message.error(err?.message)
+            })
+        }
+        setChargesPostData(ChargesPostData.filter(item => item !== record))
+        setConfirmLoading(false)
+
 
     }
 
     const handleSave = () => {
         setPageSubmitting(true)
-        APIHandlers.post('/api/academic/charges/', { 'charges': ChargesPostData }).then(response => {
+        let data = ChargesPostData.filter(item => item.id == undefined)
+        console.log(data);
+
+        APIHandlers.post('/api/academic/charges/', { 'charges': data }).then(response => {
             message.success('Success')
-            router.push('/academic/charges')
             setPageSubmitting(false)
+            location.reload()
 
         }).catch(err => {
             message.error(err)
@@ -289,17 +316,10 @@ const ChargesSetup = (prop: Props) => {
 
                 <Space size={'middle'}>
                     <Form.Item label=" " colon={false}>
-                        <Button type="primary" htmlType="submit" onClick={handleSave} className='bg-purple-700' loading={PageSubmitting} >
+                        <Button type="primary" htmlType="submit" onClick={handleSave} className='bg-purple-700' loading={PageSubmitting} disabled={ChargesPostData.length == 0} >
                             Submit
                         </Button>
                     </Form.Item>
-                    <Form.Item label=" " colon={false}>
-
-                        <Button htmlType="button" onClick={() => { router.push('/academic/charges') }} className='bg-gray-300' >
-                            Cancel
-                        </Button>
-                    </Form.Item>
-
                 </Space>
 
 

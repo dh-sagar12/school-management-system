@@ -109,10 +109,9 @@ class StudentClassModel(models.Model):
     admission_date = models.DateField(null=False, blank=False)
     class_id = models.ForeignKey(
         AcademicClassModel, on_delete=models.DO_NOTHING,   null=False, blank=False, db_column='class_id')
-    faculty_id = models.ForeignKey(
-        FacultyModel, on_delete=models.DO_NOTHING,  null=True, blank=True, db_column='faculty_id')
     course_id = models.ForeignKey(
         CoursesModel, on_delete=models.DO_NOTHING,  null=True, blank=True, db_column='course_id')
+    academic_session_type =  models.IntegerField(null=True, blank=True, db_column='academic_session_type')
     has_passed = models.BooleanField(default=False, null=False, blank=False)
     passed_year = models.DateField(null=True, blank=True)
     passed_grade = models.CharField(null=True,  blank=True)
@@ -137,6 +136,7 @@ class StudentAdmissionViewModel(models.Model):
     class_name =  models.CharField(max_length=50)
     faculty_name =  models.CharField(max_length=50)
     course_name = models.CharField(max_length=100)
+    academic_session_type =  models.TextField(blank=True)
 
     class Meta:
         managed= False

@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     "core",
     "student",
     "academic",
-    "staff"
+    "staff",
+    "tran",
 ]
 
 

@@ -114,4 +114,15 @@ class AcademicChargesView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message': 'Success'}, status =  status.HTTP_201_CREATED)
+    
+    def get(self, request, class_id):
+        data   =  AcademicChargesModel.objects.filter(class_id =  class_id, is_active = True)        
+        serializer  =  AcademicChargesSerializer(data, many= True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request, id):
+        data =  AcademicChargesModel.objects.get(id =  id)
+        data.is_active =  False
+        data.save()
+        return Response({'message': 'Success'}, status=status.HTTP_200_OK)
 

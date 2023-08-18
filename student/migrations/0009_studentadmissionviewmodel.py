@@ -33,9 +33,9 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             "DROP VIEW IF EXISTS student.student_admission_view;", 
             """ 
-                CREATE OR REPLACE VIEW student.student_admission_view as 
+             CREATE OR REPLACE VIEW student.student_admission_view as 
                 SELECT 
-                c.id
+                c.id,
                 c.admission_date admission_date_ad, 
                 core.date_np(c.admission_date)::character varying(50) admission_date,
                 s.student_id,
@@ -47,8 +47,8 @@ class Migration(migrations.Migration):
                 FROM student.class_details c 
                 JOIN student.students s  ON s.id = c.student_id
                 JOIN academic.classes ac on ac.id = c.class_id
-                JOIN academic.faculties f ON f.id = c.faculty_id
-                JOIN academic.courses  ON c.course_id = courses.id
+                LEFT JOIN academic.courses  ON c.course_id = courses.id
+				LEFT JOIN academic.faculties f ON f.id = courses."faculty_Id"
                 LEFT JOIN student.contact_details cd ON cd.student_id = s.id
                 GROUP BY admission_date, s.student_id, first_name, middle_name, last_name, 
                 class_name, faculty_name, course_name, c.id;

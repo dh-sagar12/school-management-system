@@ -56,7 +56,7 @@ const StudentAdmissionHome = () => {
             })
 
         }).catch(err => {
-            message.error(err)
+            message.error(err?.message)
         })
 
 
@@ -140,8 +140,16 @@ const StudentAdmissionHome = () => {
 
         },
         {
+            title: 'Year/Semester',
+            dataIndex: 'academic_session_type',
+            key: 'academic_session_type',
+
+
+        },
+        {
             title: 'Action',
             key: 'action',
+            fixed: 'right', 
             render: (_, record) => (
                 <Space size="middle">
                     <a>
@@ -183,7 +191,6 @@ const StudentAdmissionHome = () => {
 
             <Card>
                 <div className='w-full overflow-scroll'>
-
                     <Table columns={columns} 
                     dataSource={AdmissionStudentGrid} 
                     style={{ whiteSpace: 'nowrap' }} 
