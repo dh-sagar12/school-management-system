@@ -1,14 +1,14 @@
 "use client"
-import { Button, Card, Col, DatePicker, Divider, Form, Input, Row, Select } from 'antd'
+import { Button, Card, Col, DatePicker, Divider, Form, Row, Select, Space, message } from 'antd'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '@/Context/AuthContext';
 import dayjs from 'dayjs';
 import StudentSearch from '@/helpers/StudentSearch';
 import { ClassesModel, CoursesModel, FacultyModel } from '@/academic/academic';
 import getAcademicSession from '@/utils/AcademicSessionServices';
-import type { ColumnsType } from 'antd/es/table';
-import { Table } from '@chakra-ui/react';
 import ChargeTableForAdmission from './ChargeTableForAdmission';
+import APIHandlers from '@/utils/APIHandlers';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   ClassesModel: ClassesModel[]
@@ -16,16 +16,36 @@ interface Props {
   Courses: CoursesModel[]
 }
 
+interface Charges {
+  key?: number,
+  charge_id: number,
+  charge_name: string,
+  due_charge: number,
+  course_id: number
+  academic_session_type: number,
+  discount: number,
+  received_amount: number,
+}
+
 
 const StudentAdmissionForm = (prop: Props) => {
+  const [PageSubmitting, setPageSubmitting] = useState<boolean>(false)
   const { today_date } = useContext(AuthContext)
+  const [value, setValue] = useState('')
+  const [disabled, setdisabled] = useState(true)
+  const [ShowFaculty, setShowFaculty] = useState(false)
   const [AcademicSessionDropdown, setAcademicSessionDropdown] = useState<any>([])
-
-
-
-  useEffect(() => {
-
-  }, [])
+  const [ChargesData, setChargesData] = useState<Charges[]>([])
+  const [selectedRow, setSelectedRow] = useState<Charges[]>([]);
+  const [ChargesTotal, setChargesTotal] = useState<{
+    total_charge: number,
+    discount: number
+  }>({
+    total_charge: 0,
+    discount: 0
+  })
+  const [form] = Form.useForm();
+  const router = useRouter()
 
 
 
@@ -40,18 +60,53 @@ const StudentAdmissionForm = (prop: Props) => {
       sm: { span: 32 },
     },
   };
-  const [form] = Form.useForm();
 
   const onFinish = (values: any) => {
-    console.log(values);
+    let class_id = form.getFieldValue('class_id')
+
+    APIHandlers.post('/api/tran/due-charges/', { 'student_id': value, 'class_id': class_id }).then(response => {
+      if (values?.academic_session_type !== undefined) {
+        let charge_data = response.filter((item: any) => item.course_id == values.course_id && item.academic_session_type == values.academic_session_type).map((item: any) => {
+          return { ...item, key: item.charge_id, discount: 0, received_amount: item.due_charge }
+        })
+        setChargesData(charge_data)
+      }
+      else {
+        let charge_data = response.map((item: any) => {
+          return { ...item, key: item.charge_id, discount: 0, received_amount: item.due_charge }
+        })
+        setChargesData(charge_data)
+      }
+
+
+
+    }).catch(err => {
+
+      message.error(err?.message)
+    })
+
 
   }
-  const [value, setValue] = useState('')
-  const [ShowFaculty, setShowFaculty] = useState(false)
+
 
   const faculty_needed = ['Eleven', 'Twelve', 'Bachelor', 'Master']
 
+  useEffect(() => {
+    form.setFieldsValue({ 'student_id': value })
+  }, [value])
+
+  useEffect(() => {
+    let total_charge: number = selectedRow.reduce((prev, curr_val) => prev + curr_val.received_amount, 0)
+    let total_discount: number = selectedRow.reduce((prev, curr_val) => prev + curr_val.discount, 0)
+    setChargesTotal({ ...ChargesTotal, total_charge: total_charge, discount: total_discount })
+  }, [selectedRow])
+
   const handleChangeInClass = (value: number) => {
+    form.setFieldsValue({ course_id: null, academic_session_type: null })
+    setChargesData([])
+    if (value > 0) {
+      setdisabled(false)
+    }
 
     if (prop.ClassesModel.filter((item) => {
       return faculty_needed.some(elem => {
@@ -81,12 +136,12 @@ const StudentAdmissionForm = (prop: Props) => {
   }
 
 
-  const fetchChargesData = () => {
-    console.log('fetching...');
 
+  const SaveAdmissionForm = () => {
+      console.log('now rest work for tomorrow');
+      
+    
   }
-
-
 
   return (
     <div>
@@ -232,7 +287,7 @@ const StudentAdmissionForm = (prop: Props) => {
             }
             <Col xs={24} sm={12} md={6}>
               <Form.Item label=" " colon={false}>
-                <Button htmlType="button" className='text-purple-600 border-purple-700' onClick={fetchChargesData}>
+                <Button htmlType="submit" className='text-purple-600 border-purple-700' disabled={disabled}>
                   ShowData
                 </Button>
               </Form.Item>
@@ -240,10 +295,40 @@ const StudentAdmissionForm = (prop: Props) => {
           </Row>
 
           <Divider className='border-purple-700' style={{ fontWeight: 'bold', color: '#922EC9', fontSize: '16px' }}>Charges</Divider>
-          
-          <ChargeTableForAdmission/>
+
+          <ChargeTableForAdmission ChargesData={ChargesData} setChargesData={setChargesData} selectedRow={selectedRow} setSelectedRow={setSelectedRow} />
 
         </Form>
+
+        <div className='leading-7 mb-5'>
+          <p>
+            <span className='font-bold'>Total Charge :</span>  <span>{ChargesTotal.total_charge}</span>
+          </p>
+          <p>
+            <span className='font-bold'>Discount :</span>  <span>{ChargesTotal.discount}</span>
+          </p>
+          <hr />
+          <p>
+            <span className='font-bold'>Net Total :</span> <span>{ChargesTotal.total_charge - ChargesTotal.discount}</span>
+          </p>
+        </div>
+
+        <Space size={'middle'}>
+          <Form.Item label=" " colon={false}>
+            <Button type="primary" htmlType="button" onClick={SaveAdmissionForm} className='bg-purple-700' loading={PageSubmitting} 
+            disabled={form.getFieldValue('student_id')== '' || form.getFieldValue('class_id')<=0 } >
+              Submit
+            </Button>
+          </Form.Item>
+          <Form.Item label=" " colon={false}>
+
+            <Button htmlType="button" onClick={() => { router.push('/student/') }} className='bg-gray-300'  >
+
+              Cancel
+            </Button>
+          </Form.Item>
+
+        </Space>
       </Card>
     </div>
   )

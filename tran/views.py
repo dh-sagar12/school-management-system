@@ -5,22 +5,48 @@ from student.models import StudentModel
 from rest_framework.response import Response
 from rest_framework import status
 from academic.models import AcademicChargesModel
+from core.models import AcademicYearModel
+from django.db.models import Sum
+from .models import *
+from django.db.models.functions import Coalesce
+from django.db.models import Sum, F, Case, When, DecimalField
 # Create your views here.
 
 
 class GetDueChargeView(APIView):
-    
-    def post(request):
+
+    def post(self, request):
         student_id = request.data.get('student_id')
         class_id = request.data.get('class_id')
+        due_charges =  []
+
+
         try:
+            academic_year_instance = AcademicYearModel.objects.get(
+                is_active=True)
+            
+            received_charges = AdmissionTransactionModel.objects.select_related('tran_id').filter(tran_id__verification_id__gt=0, student_id=  student_id , tran_id__tran_date__range=(
+            academic_year_instance.starts_on, academic_year_instance.ends_on)).values('student_id', 'charge_id').annotate(total_amount=Sum('amount'))
 
-            student_instance  = StudentModel.object.get(id= student_id)
-            charges_instances = AcademicChargesModel.objects.filter(class_id = class_id, is_active = True )
-        
+            receivable_charges = AcademicChargesModel.objects.filter(
+            class_id=class_id, is_active=True).values('id', 'charge_amount', 'charge_name', 'course_id', 'academic_session_type')
+
         except Exception as e:
-            return Response({'error': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+            return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        for group in receivable_charges:
 
-        serializer = GetDueChargeSerializer(request.data)
+            for item in received_charges:
+
+                if group['id'] == item['charge_id']:
+                    group['charge_amount'] =  group['charge_amount'] -  item['total_amount']
+
+            due_charges.append({
+                        'charge_id': group['id'], 
+                        'charge_name': group['charge_name'], 
+                        'due_charge': group['charge_amount'], 
+                        'course_id': group['course_id'] ,
+                        'academic_session_type': group['academic_session_type'] 
+                                })
+
+        return Response(due_charges, status=status.HTTP_200_OK)

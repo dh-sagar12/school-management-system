@@ -110,7 +110,7 @@ class ApiHandler {
   handleError(error: any) {
     console.log('error', error);
     const error_response = {
-      'message': error?.response?.data?.error ? error?.response?.data?.error : "Invalid Request",
+      'message': error?.response?.data?.error ? error?.response?.data?.error : error?.message,
       'status': error?.response?.status ? error?.response?.status : 400
     }
     throw error_response;

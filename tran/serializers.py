@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from .models import *
 
 class GetDueChargeSerializer(serializers.Serializer):
     id =  serializers.IntegerField(required =  False)
@@ -10,6 +10,14 @@ class GetDueChargeSerializer(serializers.Serializer):
     class Meta:
         fields = '__all__'
         read_only_fields = ['id']
+
+    
+class AdmissionTransactionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model  =  AdmissionTransactionModel
+        fields =  '__all__'
+
     
 
     

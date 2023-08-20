@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
-import { Button, Form, Input, Popconfirm, Table } from 'antd';
+import { Button, Form, Input, InputNumber, Popconfirm, Table, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -46,7 +46,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
     ...restProps
 }) => {
     const [editing, setEditing] = useState(false);
-    const inputRef = useRef<InputRef>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const form = useContext(EditableContext)!;
 
     useEffect(() => {
@@ -67,7 +67,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
             toggleEdit();
             handleSave({ ...record, ...values });
         } catch (errInfo) {
-            console.log('Save failed:', errInfo);
         }
     };
 
@@ -85,7 +84,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
                     },
                 ]}
             >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                <InputNumber ref={inputRef} onPressEnter={save} onBlur={save} />
             </Form.Item>
         ) : (
             <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
@@ -104,36 +103,39 @@ interface DataType {
     charge_name: string;
     charge_amount: number;
     received_amount: number;
-    
+
 }
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
-const ChargeTableForAdmission: React.FC = () => {
-    const [dataSource, setDataSource] = useState<DataType[]>([
-        {
-            key: '0',
-            charge_name: 'Edward King 0',
-            charge_amount: 32,
-            received_amount: 32
 
-        },
-        {
-            key: '1',
-            charge_name: 'Edward King 0',
-            charge_amount: 32,
-            received_amount: 32
-        },
-        {
-            key: '2',
-            charge_name: 'Edward King 0',
-            charge_amount: 32,
-            received_amount: 32
-        },
-        
-    ]);
+interface Charges {
+    key?: number,
+    charge_id: number,
+    charge_name: string,
+    due_charge: number,
+    course_id: number
+    academic_session_type: number,
+    discount: number,
+    received_amount: number,
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+}
+
+
+interface Props {
+    ChargesData: Charges[];
+    setChargesData: any
+    selectedRow: Charges[]
+    setSelectedRow: any
+
+
+
+}
+
+const ChargeTableForAdmission = (prop: Props) => {
+
+
+    // const [selectedRow, setSelectedRow] = useState<Charges[]>([]);
 
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
         {
@@ -142,27 +144,52 @@ const ChargeTableForAdmission: React.FC = () => {
         },
         {
             title: 'Charge',
-            dataIndex: 'charge_amount',
+            dataIndex: 'due_charge',
         },
         {
             title: 'Received Charge',
             dataIndex: 'received_amount',
-            editable: true, 
-            width: '50%'
+            editable: true,
         },
-       
+        {
+            title: 'Discount',
+            dataIndex: 'discount',
+            editable: true,
+        },
+
     ];
 
 
-    const handleSave = (row: DataType) => {
-        const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, {
-            ...item,
-            ...row,
-        });
-        setDataSource(newData);
+    const handleSave = (row: Charges) => {
+
+        if (row.due_charge < row.received_amount || row.due_charge < row.discount) {
+            message.warning('invalid Data')
+        }
+        else {
+            const newData = [...prop.ChargesData];
+            const index = newData.findIndex((item) => row.key === item.key);
+            const item = newData[index];
+            newData.splice(index, 1, {
+                ...item,
+                ...row,
+            });
+            prop.setChargesData(newData);
+
+            if (prop.selectedRow.some(item => item.charge_id == row.charge_id)) {
+                let updated_selected_row =  prop.selectedRow.map(item=> {
+                    if (item.charge_id  == row.charge_id){
+                        return row
+                    }
+                    return item
+                })
+                // setSelectedRow(selectedRow.filter(item=> item.charge_id !== row.charge_id))
+                prop.setSelectedRow(updated_selected_row)
+            }
+
+
+
+        }
+
     };
 
     const components = {
@@ -188,13 +215,12 @@ const ChargeTableForAdmission: React.FC = () => {
         };
     });
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-        setSelectedRowKeys(newSelectedRowKeys);
+    const onSelectChange = (newSelectedRowKeys: React.Key[], record: any) => {
+        prop.setSelectedRow(record);
     };
 
     const rowSelection = {
-        selectedRowKeys,
+        setSelectedRow: prop.setSelectedRow, 
         onChange: onSelectChange,
     };
 
@@ -207,7 +233,7 @@ const ChargeTableForAdmission: React.FC = () => {
                 components={components}
                 rowClassName={() => 'editable-row'}
                 bordered
-                dataSource={dataSource}
+                dataSource={prop.ChargesData}
                 columns={columns as ColumnTypes}
             />
         </div>
