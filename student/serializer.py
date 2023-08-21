@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from  .models import *
+from tran.models import TempTranCode, TransactionMasterModel
+from tran.serializers import AdmissionTransactionSerializer
 from django.db.models import Max
 
 
@@ -36,10 +38,11 @@ class StudentClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentClassModel
-        fields  =  ('id', 'student_id', 'academic_year_id', 'admission_date', 'class_id', 'faculty_id', 'course_id', 'has_passed', 'passed_year', 'passed_grade', 'created_by', 'created_on')
+        fields  =  ('id', 'student_id', 'academic_year_id', 'admission_date', 'class_id', 'course_id', 'has_passed', 'passed_year', 'passed_grade', 'created_by', 'created_on', 'academic_session_type')
         extra_kwargs = {
             'id': {'read_only': True}, 
-            'created_on': {'read_only': True}
+            'created_on': {'read_only': True},
+            'academic_year_id': {'read_only': True},
         }
         
 class StudentAdmissionViewSerializer(serializers.ModelSerializer):
@@ -195,3 +198,64 @@ class RegisterNewStudentSerializer(serializers.Serializer):
                     'student_addresses': return_address_data 
                     # 'student_class': serialized_student_class.data
                 }
+        
+
+
+class AdmitStudentSerializer(serializers.Serializer):
+    class_detail =  StudentClassSerializer()
+    charges  =  serializers.ListField()
+    class Meta:
+        model =  StudentClassModel
+        fields  =  ("class_detail", 'charges')
+    
+
+    def create(self, validated_data):
+        class_detail =  dict(validated_data.pop('class_detail'))
+        charges =  validated_data.pop('charges')
+
+        # First of all creating transaction master as 
+        temp_tran_code =  TempTranCode
+        tran_code =  temp_tran_code.get_new_tran_code(self, book_name='TRAN')
+        tran_date = self.context['request'].session['today_ad']
+        created_by =  self.context['request'].user
+        
+        transaction_master =  TransactionMasterModel(tran_code =  tran_code, tran_date  =  tran_date, created_by  =created_by, verification_id = 0 )
+        transaction_master.save()
+
+
+
+        # inserted into student class details
+        academic_year  = AcademicYearModel.objects.get(is_active =  True)
+        class_detail['tran_id'] = transaction_master
+        class_detail['academic_year_id'] = academic_year
+        serialized_class_detail =   StudentClassSerializer.create(self, validated_data=dict(class_detail))
+        serialized_class_detail.save()
+
+        # making charges transction 
+
+
+        # now adding in admission transaction details 
+        if len(charges) >  0 :
+            for item in charges:
+                item['tran_id'] =  transaction_master.id
+                charges_serializer =  AdmissionTransactionSerializer(data=item)
+                charges_serializer.is_valid(raise_exception=True)
+                charges_serializer.save()
+        return True
+        
+
+
+        
+
+
+
+        
+
+
+        
+
+        
+
+
+        
+

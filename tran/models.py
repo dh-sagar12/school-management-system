@@ -51,3 +51,28 @@ class AdmissionTransactionModel(models.Model):
 
     def __str__(self):
         return f"{self.id}"
+
+
+
+class TempTranCode(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    book_name = models.CharField(max_length=6, null=False, blank=False)
+    tran_count = models.IntegerField(null=False, blank=False)
+
+    def __str__(self):
+        return self.book_name
+
+
+    class Meta:
+        verbose_name = "Temp Tran Code"
+        verbose_name_plural = "Temp Tran Codes"
+        db_table = 'tran"."temp_tran_code'
+
+
+    def get_new_tran_code(self, book_name):
+        max_count =  TempTranCode.objects.get(book_name =  book_name)
+        max_count.tran_count =  max_count.tran_count + 1
+        max_count.save()
+        print('max_count', max_count.tran_count)
+        return f'{max_count.book_name}-{max_count.tran_count }'
+

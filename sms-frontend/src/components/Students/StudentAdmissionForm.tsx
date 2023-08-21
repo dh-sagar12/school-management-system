@@ -9,6 +9,7 @@ import getAcademicSession from '@/utils/AcademicSessionServices';
 import ChargeTableForAdmission from './ChargeTableForAdmission';
 import APIHandlers from '@/utils/APIHandlers';
 import { useRouter } from 'next/navigation';
+import { StudentClassModel } from '@/students/studentTypes';
 
 interface Props {
   ClassesModel: ClassesModel[]
@@ -30,13 +31,14 @@ interface Charges {
 
 const StudentAdmissionForm = (prop: Props) => {
   const [PageSubmitting, setPageSubmitting] = useState<boolean>(false)
-  const { today_date } = useContext(AuthContext)
+  const { today_date, usermeta } = useContext(AuthContext)
   const [value, setValue] = useState('')
   const [disabled, setdisabled] = useState(true)
   const [ShowFaculty, setShowFaculty] = useState(false)
   const [AcademicSessionDropdown, setAcademicSessionDropdown] = useState<any>([])
   const [ChargesData, setChargesData] = useState<Charges[]>([])
   const [selectedRow, setSelectedRow] = useState<Charges[]>([]);
+  const [ClassDetailsData, setClassDetailsData] = useState<StudentClassModel>()
   const [ChargesTotal, setChargesTotal] = useState<{
     total_charge: number,
     discount: number
@@ -62,8 +64,14 @@ const StudentAdmissionForm = (prop: Props) => {
   };
 
   const onFinish = (values: any) => {
-    let class_id = form.getFieldValue('class_id')
+    console.log(values);
 
+    setClassDetailsData({ ...values, admission_date: values["admission_date"].format("YYYY-MM-DD"), created_by: usermeta?.id })
+
+
+
+    let class_id = form.getFieldValue('class_id')
+    setChargesData([])
     APIHandlers.post('/api/tran/due-charges/', { 'student_id': value, 'class_id': class_id }).then(response => {
       if (values?.academic_session_type !== undefined) {
         let charge_data = response.filter((item: any) => item.course_id == values.course_id && item.academic_session_type == values.academic_session_type).map((item: any) => {
@@ -138,9 +146,34 @@ const StudentAdmissionForm = (prop: Props) => {
 
 
   const SaveAdmissionForm = () => {
-      console.log('now rest work for tomorrow');
-      
-    
+    let transaction_list = selectedRow.map(item => {
+      return {
+        tran_date: ClassDetailsData?.admission_date,
+        student_id: ClassDetailsData?.student_id,
+        charge_id: item.charge_id,
+        amount: item.received_amount,
+        discount: item.discount,
+        statement_reference: `Received-${item.charge_name}`
+      }
+    })
+
+    let api_data = {
+      class_detail: ClassDetailsData,
+      charges: transaction_list
+    }
+
+    console.log(api_data);
+
+    APIHandlers.post('/api/student/admission/', api_data).then(response => {
+      message.success('Saved!!')
+      router.push('/student/admission/')
+      form.resetFields()
+
+    }).catch((err) => {
+      message.error(err.message)
+    })
+
+
   }
 
   return (
@@ -315,8 +348,8 @@ const StudentAdmissionForm = (prop: Props) => {
 
         <Space size={'middle'}>
           <Form.Item label=" " colon={false}>
-            <Button type="primary" htmlType="button" onClick={SaveAdmissionForm} className='bg-purple-700' loading={PageSubmitting} 
-            disabled={form.getFieldValue('student_id')== '' || form.getFieldValue('class_id')<=0 } >
+            <Button type="primary" htmlType="button" onClick={SaveAdmissionForm} className='bg-purple-700' loading={PageSubmitting}
+              disabled={form.getFieldValue('student_id') == '' || form.getFieldValue('class_id') <= 0} >
               Submit
             </Button>
           </Form.Item>

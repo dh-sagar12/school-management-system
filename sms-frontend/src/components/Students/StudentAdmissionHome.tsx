@@ -98,6 +98,14 @@ const StudentAdmissionHome = () => {
         },
 
         {
+            title: 'Tran COde',
+            dataIndex: 'tran_code',
+            key: 'tran_code',
+
+
+        },
+
+        {
             title: 'Student Id',
             dataIndex: 'student_id',
             key: 'student_id',

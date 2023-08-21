@@ -90,9 +90,9 @@ class StudentAdmissionGridView(APIView):
     def get(self, request):
         admission_date =  request.data.get('admission_date')
         if admission_date is not None:
-            queryset = StudentAdmissionViewModel.objects.filter(admission_date_ad = admission_date)
+            queryset = StudentAdmissionViewModel.objects.filter(admission_date_ad = admission_date).order_by('-tran_id')
         else:
-            queryset = StudentAdmissionViewModel.objects.all()
+            queryset = StudentAdmissionViewModel.objects.all().order_by('-tran_id')
         
         paginated_queryset = self.pagination_class.paginate_queryset(
             queryset, request)
@@ -104,3 +104,13 @@ class StudentAdmissionGridView(APIView):
         return Response(paginated_resp.data, status = status.HTTP_200_OK)
         
         
+
+class AdmitStudentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+
+    def post(self, request):
+        serializer = AdmitStudentSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'success'}, status= status.HTTP_201_CREATED)

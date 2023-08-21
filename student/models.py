@@ -117,13 +117,14 @@ class StudentClassModel(models.Model):
     passed_grade = models.CharField(null=True,  blank=True)
     created_by = models.ForeignKey(
         User, null=False, blank=False, on_delete=models.DO_NOTHING, db_column='created_by')
+    tran_id =  models.ForeignKey('tran.TransactionMasterModel', on_delete=models.DO_NOTHING, db_column='tran_id', null=False)
     created_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'student"."class_details'
 
     def __str__(self):
-        return str(self.student_id)
+        return f"{self.student_id}"
 
 
 
@@ -137,6 +138,8 @@ class StudentAdmissionViewModel(models.Model):
     faculty_name =  models.CharField(max_length=50)
     course_name = models.CharField(max_length=100)
     academic_session_type =  models.TextField(blank=True)
+    tran_id =  models.BigIntegerField()
+    tran_code =  models.CharField(max_length=15)
 
     class Meta:
         managed= False
