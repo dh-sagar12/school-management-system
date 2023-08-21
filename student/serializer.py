@@ -38,11 +38,12 @@ class StudentClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentClassModel
-        fields  =  ('id', 'student_id', 'academic_year_id', 'admission_date', 'class_id', 'course_id', 'has_passed', 'passed_year', 'passed_grade', 'created_by', 'created_on', 'academic_session_type')
+        fields  =  ('id', 'student_id', 'academic_year_id', 'admission_date', 'class_id', 'course_id', 'has_passed', 'passed_year', 'passed_grade', 'created_by', 'created_on', 'academic_session_type', 'tran_id')
         extra_kwargs = {
             'id': {'read_only': True}, 
             'created_on': {'read_only': True},
             'academic_year_id': {'read_only': True},
+            'tran_id': {'read_only': True},
         }
         
 class StudentAdmissionViewSerializer(serializers.ModelSerializer):
@@ -241,7 +242,10 @@ class AdmitStudentSerializer(serializers.Serializer):
                 charges_serializer =  AdmissionTransactionSerializer(data=item)
                 charges_serializer.is_valid(raise_exception=True)
                 charges_serializer.save()
-        return True
+        return {
+            "class_detail": serialized_class_detail, 
+            "charges": []
+        }
         
 
 

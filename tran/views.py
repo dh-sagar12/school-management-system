@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+
+from student.serializer import StudentAdmissionViewSerializer
 from .serializers import *
-from student.models import StudentModel
+from student.models import StudentAdmissionViewModel, StudentModel
 from rest_framework.response import Response
 from rest_framework import status
 from academic.models import AcademicChargesModel
@@ -50,3 +52,23 @@ class GetDueChargeView(APIView):
                                 })
 
         return Response(due_charges, status=status.HTTP_200_OK)
+    
+
+
+
+class AdmissionTransactionDetailView(APIView):
+    
+
+    def get(self, request, tran_id):
+        try:
+            student_admission_view_instance =  StudentAdmissionViewModel.objects.get(tran_id  =  tran_id)
+            transaction_details = AdmissionTransactionModel.objects.filter(tran_id=  tran_id)
+        except Exception as e:
+            return Response(f'{e}', status=status.HTTP_404_NOT_FOUND)
+
+        student_admission_view_serializer  = StudentAdmissionViewSerializer(student_admission_view_instance) 
+        transaction_detail_serializer  = AdmissionTransactionSerializer(transaction_details, many = True)
+        return Response({
+            "class_data": student_admission_view_serializer.data, 
+            "transaction_detail": transaction_detail_serializer.data
+        }, status=status.HTTP_200_OK)

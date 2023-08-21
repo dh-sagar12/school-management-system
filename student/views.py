@@ -113,4 +113,4 @@ class AdmitStudentView(APIView):
         serializer = AdmitStudentSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({'message': 'success'}, status= status.HTTP_201_CREATED)
+        return Response({'message': serializer.data.get('class_detail').get('tran_id')}, status= status.HTTP_201_CREATED)

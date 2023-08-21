@@ -76,3 +76,12 @@ class TempTranCode(models.Model):
         print('max_count', max_count.tran_count)
         return f'{max_count.book_name}-{max_count.tran_count }'
 
+
+
+# class AdmissionTransactionDetailViewModel(models.Model):
+#     id  = models.BigAutoField()
+#     tran_code  = models.CharField(max_length=15)
+#     tran_date = models.DateField()
+#     tran_date_ad =  models.CharField(max_length=50)
+#     student_name = models.CharField()
+
