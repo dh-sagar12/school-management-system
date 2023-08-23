@@ -116,7 +116,11 @@ class AcademicChargesView(APIView):
         return Response({'message': 'Success'}, status =  status.HTTP_201_CREATED)
     
     def get(self, request, class_id):
-        data   =  AcademicChargesModel.objects.filter(class_id =  class_id, is_active = True)        
+        if class_id > 0 :
+            data   =  AcademicChargesModel.objects.filter(class_id =  class_id, is_active = True)   
+        else:
+            data   =  AcademicChargesModel.objects.filter(is_active = True)   
+
         serializer  =  AcademicChargesSerializer(data, many= True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

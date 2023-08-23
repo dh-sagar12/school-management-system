@@ -63,6 +63,7 @@ export interface AddNewStudentForm {
 
 export interface AdmissionGridView {
     id?: number,
+    tran_id : number
     admission_date_ad: Date | string,
     admission_date: string,
     student_id: number,

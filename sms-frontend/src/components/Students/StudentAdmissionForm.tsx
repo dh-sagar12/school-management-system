@@ -64,7 +64,6 @@ const StudentAdmissionForm = (prop: Props) => {
   };
 
   const onFinish = (values: any) => {
-    console.log(values);
 
     setClassDetailsData({ ...values, admission_date: values["admission_date"].format("YYYY-MM-DD"), created_by: usermeta?.id })
 
@@ -161,12 +160,11 @@ const StudentAdmissionForm = (prop: Props) => {
       class_detail: ClassDetailsData,
       charges: transaction_list
     }
-
-    console.log(api_data);
-
     APIHandlers.post('/api/student/admission/', api_data).then(response => {
+      console.log(response);
+      
       message.success('Saved!!')
-      router.push('/student/admission/')
+      router.push(`/student/admission/confirm/${response?.message}`)
       form.resetFields()
 
     }).catch((err) => {

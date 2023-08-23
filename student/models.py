@@ -88,8 +88,8 @@ class StudentAddressModel(models.Model):
     district_id = models.ForeignKey(
         DistrictModel, on_delete=models.DO_NOTHING, null=False, db_column='district_id')
     local_bodies_id = models.ForeignKey(
-        LocalBodiesModel, on_delete=models.DO_NOTHING, null=False)
-    ward_no = models.IntegerField(null=False, blank=False, db_column='local_bodies_id')
+        LocalBodiesModel, on_delete=models.DO_NOTHING, null=False, db_column='local_bodies_id')
+    ward_no = models.IntegerField(null=False, blank=False, db_column='ward_no')
     street = models.CharField(max_length=50, null=True, blank=True)
     tole_name = models.CharField(max_length=50, null=True, blank=True)
 
@@ -140,6 +140,10 @@ class StudentAdmissionViewModel(models.Model):
     academic_session_type =  models.TextField(blank=True)
     tran_id =  models.BigIntegerField()
     tran_code =  models.CharField(max_length=15)
+    verification_status = models.CharField(max_length=20, null=False)
+    created_by  =  models.CharField(max_length=50)
+    verified_by =  models.CharField(max_length=50)
+    permanent_address =  models.CharField(max_length=200)
 
     class Meta:
         managed= False

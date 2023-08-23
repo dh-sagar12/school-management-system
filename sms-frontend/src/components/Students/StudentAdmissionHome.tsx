@@ -160,11 +160,11 @@ const StudentAdmissionHome = () => {
             fixed: 'right', 
             render: (_, record) => (
                 <Space size="middle">
-                    <a>
+                    <Link href={`/student/admission/confirm/${record.tran_id}`}>
                         <Tooltip title='View Detail' >
                             <AiOutlineUnorderedList className='text-purple-700' />
                         </Tooltip>
-                    </a>
+                    </Link>
                     <a>
                         <Tooltip title='Print Receipt'>
                             <AiOutlinePrinter className='text-purple-700' />
