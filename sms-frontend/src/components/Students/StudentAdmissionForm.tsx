@@ -225,7 +225,7 @@ const StudentAdmissionForm = (prop: Props) => {
                 ]}
               >
 
-                <StudentSearch setValue={setValue} value={value} style={{ width: '100%' }} />
+                <StudentSearch setValue={setValue} value={value} style={{ width: '100%' }} exclude_admitted={true} />
 
               </Form.Item>
             </Col>

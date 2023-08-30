@@ -18,7 +18,12 @@ class AdmissionTransactionSerializer(serializers.ModelSerializer):
         model  =  AdmissionTransactionModel
         fields =  '__all__'
 
-    
+
+class TransactionMasterSerializer(serializers.ModelSerializer):
+
+    class Meta: 
+        model =  TransactionMasterModel
+        fields =  "__all__"
 
     
 

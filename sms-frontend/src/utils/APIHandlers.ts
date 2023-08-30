@@ -80,6 +80,16 @@ class ApiHandler {
     }
   }
 
+   // PUT request
+   async patch(url: string, data: object) {
+    try {
+      const response = await api.patch(url, data);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   // DELETE request
   async delete(url: string) {
     try {

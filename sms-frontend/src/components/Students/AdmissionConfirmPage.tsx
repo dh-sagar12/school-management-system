@@ -1,9 +1,13 @@
 "use client"
-import { Button, Card, Descriptions, Divider, Space } from 'antd'
+import { Button, Card, Descriptions, Divider, Space, message } from 'antd'
 import Link from 'next/link'
-import React from 'react'
-import { AiOutlineUpload } from 'react-icons/ai'
+import React, { useContext } from 'react'
+import { AiOutlinePrinter, AiOutlineUpload } from 'react-icons/ai'
 import AmountToWordConverter from '@/utils/AmountToWordConverter'
+import { TiTick } from 'react-icons/ti'
+import { RxCross1 } from 'react-icons/rx'
+import { AuthContext } from '@/Context/AuthContext'
+import APIHandlers from '@/utils/APIHandlers'
 
 interface Param {
     slug: any,
@@ -14,6 +18,30 @@ interface Param {
 
 const AdmissionConfirmPage = (params: Param) => {
 
+    const { today_date, usermeta } = useContext(AuthContext)
+
+
+    const handleReject = (tran_id: number) => {
+        APIHandlers.patch(`/api/tran/master/${tran_id}`, { 'verification_id': -1, 'verified_by': usermeta?.id }).then(response => {
+            message.success('Admission Rejected')
+            location.reload()
+        }).catch(err => {
+            message.error(err.message)
+        })
+
+    }
+
+
+
+    const handleVerify = (tran_id: number) => {
+        APIHandlers.patch(`/api/tran/master/${tran_id}`, { 'verification_id': 1, 'verified_by': usermeta?.id }).then(response => {
+            message.success('Admission verified')
+            location.reload()
+        }).catch(err => {
+            message.error(err.message)
+
+        })
+    }
 
     return (
         <div>
@@ -22,13 +50,30 @@ const AdmissionConfirmPage = (params: Param) => {
                     <Descriptions.Item label="Tran Id">{params.AdmissionDetail.class_data.tran_id}</Descriptions.Item>
                     <Descriptions.Item label="Tran Code">{params.AdmissionDetail.class_data.tran_code}</Descriptions.Item>
                     <Descriptions.Item label="Admission Date">{params.AdmissionDetail.class_data.admission_date}</Descriptions.Item>
-                    <Descriptions.Item label="Verification Status">{params.AdmissionDetail.class_data.verification_status}</Descriptions.Item>
+                    <Descriptions.Item label="Verification Status" contentStyle={ params.AdmissionDetail.class_data.verification_status =='Rejected' ?  {color: 'red'} : {}}>{params.AdmissionDetail.class_data.verification_status}</Descriptions.Item>
                     <Descriptions.Item label="Created By">{params.AdmissionDetail.class_data.created_by}</Descriptions.Item>
                     <Descriptions.Item label="Verified By">{params.AdmissionDetail.class_data.verified_by}</Descriptions.Item>
                 </Descriptions>
                 <Divider className='border-purple-500' />
+                <div className='flex space-x-3 items-center pb-4'>
 
-                <h3 className='text-purple-700 text-xl'>More Information</h3>
+                    <h3 className='text-purple-700 text-xl'>More Information</h3>
+
+                    {
+                        params.AdmissionDetail.class_data.verification_status == 'UnVerified' ?
+                            <React.Fragment>
+                                <Button onClick={() => handleVerify(params.AdmissionDetail.class_data.tran_id)} shape="circle" className='text-green-500 border border-green-500 hover:border-green-600' icon={<TiTick />} size={'small'} />
+                                <Button onClick={() => handleReject(params.AdmissionDetail.class_data.tran_id)} shape="circle" className='text-red-500 border border-red-500 hover:border-red-600' icon={<RxCross1 className='text-center align-middle' />} size={'small'} />
+                            </React.Fragment>
+                            : <React.Fragment></React.Fragment>
+                    }
+                    {params.AdmissionDetail.class_data.verification_status == 'Verified' && params.AdmissionDetail.class_data.admission_date_ad == (today_date.today_date_ad) ?
+                        <Button shape="circle" onClick={() => handleReject(params.AdmissionDetail.class_data.tran_id)} className='text-red-500 border border-red-500 hover:border-red-600' icon={<RxCross1 className='text-center align-middle' />} size={'small'} />
+                        : <React.Fragment></React.Fragment>
+                    }
+
+
+                </div>
                 <div className='grid grid-cols-8 gap-3'>
                     <Card className='border-gray-200 col-span-5'>
                         <div className='grid grid-cols-2'>
@@ -93,7 +138,7 @@ const AdmissionConfirmPage = (params: Param) => {
                         <div className='justify-between flex'>
                             <h2 className='font-semibold text-lg text-purple-600'>Charges</h2>
                             <Link href={'/student/attachment/'} >
-                                <Button type='primary' className='bg-purple-700' icon={<AiOutlineUpload />}>Upload</Button>
+                                <Button type='primary' className='bg-purple-700' icon={<AiOutlinePrinter />}>Receipt</Button>
                             </Link>
                         </div>
                         <div className='mt-4'>
@@ -112,7 +157,7 @@ const AdmissionConfirmPage = (params: Param) => {
                                         params.AdmissionDetail.transaction_detail.map((item: any) => {
                                             return (
                                                 <tr>
-                                                    <td>{params.Charges.filter((i: any) => i.id = item.charge_id)[0].charge_name}</td>
+                                                    <td>{params.Charges.filter((i: any) => i.id == item.charge_id)[0].charge_name}</td>
                                                     <td>{item.amount}</td>
                                                     <td>{item.discount}</td>
                                                 </tr>
@@ -124,8 +169,22 @@ const AdmissionConfirmPage = (params: Param) => {
 
                                     <tr className='border-t font-semibold'>
                                         <td className=''>Total</td>
-                                        <td>{parseFloat(params.AdmissionDetail.transaction_detail.reduce((prev: any, curr: any) => 0 + curr.amount, 0)).toFixed(2)}</td>
-                                        <td>{parseFloat(params.AdmissionDetail.transaction_detail.reduce((prev: any, curr: any) => 0 + curr.discount, 0)).toFixed(2)}</td>
+                                        {/* <td>{parseFloat(params.AdmissionDetail.transaction_detail.reduce((prev: any, curr: any) => (0 + curr.amount).toFixed(2)), 0)))}</td> */}
+                                        <td>
+                                            {
+                                                params.AdmissionDetail.transaction_detail.reduce((prev: any, curr: any) => {
+                                                    return (parseFloat(prev) + parseFloat(curr.amount)).toFixed(2)
+                                                }, 0)
+                                            }
+                                        </td>
+                                        <td>
+                                            {
+                                                params.AdmissionDetail.transaction_detail.reduce((prev: any, curr: any) => {
+                                                    return (parseFloat(prev) + parseFloat(curr.discount)).toFixed(2)
+                                                }, 0)
+                                            }
+                                        </td>
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -135,7 +194,9 @@ const AdmissionConfirmPage = (params: Param) => {
                         <div>
                             <p className='py-3 '>
                                 <span className='font-semibold'>Balance In Word: </span>
-                                <span className='text-current'> Rs. {AmountToWordConverter.amount_to_word_english(parseFloat(params.AdmissionDetail.transaction_detail.reduce((prev: any, curr: any) => 0 + curr.amount, 0)).toFixed(2))}</span>
+                                <span className='text-current'> Rs. {AmountToWordConverter.amount_to_word_english(params.AdmissionDetail.transaction_detail.reduce((prev: any, curr: any) => {
+                                    return (parseFloat(prev) + parseFloat(curr.amount)).toFixed(2)
+                                }, 0)) }</span>
                             </p>
                         </div>
 
@@ -143,9 +204,7 @@ const AdmissionConfirmPage = (params: Param) => {
 
                 </div>
 
-                <Divider className='border-purple-500' />
 
-                <h3 className='text-purple-700 text-xl'>Charges</h3>
 
 
 

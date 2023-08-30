@@ -7,7 +7,6 @@ const Confirm = async ({ params }: { params: { slug: string } }) => {
   try {
     const admission_detail = await APIHandlers.get(`api/tran/admission/detail/${params.slug}`)
     const charges =  await APIHandlers.get('/api/academic/charges/0')
-    console.log(admission_detail);
     return (
       <React.Fragment>
         <h2 className='text-xl font-bold text-blue-600 pb-3'>Confirm #{params.slug}</h2>

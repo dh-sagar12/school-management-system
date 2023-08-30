@@ -7,12 +7,11 @@ from django.db.models import Max
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    
+    is_admitted =  serializers.BooleanField(required=False, default=False)
     class Meta:
         model =  StudentModel
         fields  =  ('__all__')
-        read_only_fields  =  ['id']
-        
+        read_only_fields  =  ['id', 'is_admitted']
 
 
 

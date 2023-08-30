@@ -15,6 +15,7 @@ interface Props {
     setValue: React.Dispatch<React.SetStateAction<string>>,
     notFoundContent?: React.ReactNode,
     className?: string,
+    exclude_admitted?: boolean
 }
 
 
@@ -23,7 +24,7 @@ let currentValue: string;
 
 
 
-const fetch = (value: string, callback: Function) => {
+const fetch = (value: string, callback: Function, kwargs: any = {}) => {
 
     if (timeout) {
         clearTimeout(timeout);
@@ -37,12 +38,24 @@ const fetch = (value: string, callback: Function) => {
             if (currentValue === value) {
                 const { results } = response;
 
+                if (kwargs.exclude_admitted) {
+                    const filtered_data = results.filter((item: { is_admitted: boolean }) => !item.is_admitted)
+                    const data = filtered_data.map((item: any) => ({
+                        value: item.id,
+                        text: `${item.first_name} ${item.middle_name ?? ''} ${item.last_name} (${item.student_id})`,
+                    }));
+                    callback(data);
 
-                const data = results.map((item: any) => ({
-                    value: item.id,
-                    text: `${item.first_name} ${item.middle_name ?? ''} ${item.last_name} (${item.student_id})`,
-                }));
-                callback(data);
+                }
+                else {
+                    const data = results.map((item: any) => ({
+                        value: item.id,
+                        text: `${item.first_name} ${item.middle_name ?? ''} ${item.last_name} (${item.student_id})`,
+                    }));
+                    callback(data);
+
+                }
+
             }
         }).catch(error => {
             if (error.status == 401) {
@@ -69,7 +82,7 @@ const StudentSearch = (props: Props) => {
 
     const handleSearch = (newValue: string) => {
         setLoading(true)
-        fetch(newValue, setData);
+        fetch(newValue, setData, {exclude_admitted: true});
 
 
     }

@@ -189,6 +189,7 @@ class AmountToWord {
         return word
     }
 
+    // amount_to_word_with_paisa()
 
 }
 
