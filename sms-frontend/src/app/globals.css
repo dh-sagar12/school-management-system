@@ -50,3 +50,48 @@
     box-shadow: 0 0 0.5px 0.5px;
     
   }
+
+
+
+  /* receipt css  */
+
+
+  .receipt-body {
+      font-family: Arial, sans-serif;
+      border: 2px solid rgba(199, 222, 183, 0.563);
+      padding: 12px;
+  }
+  .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+  }
+  .logo {
+      width: 100px;
+  }
+  .school-details {
+      text-align: center;
+      line-height: 3px;
+  }
+  .fees-table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+  }
+  th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+  }
+  th {
+      background-color: #f2f2f2;
+  }
+  .total-row {
+      font-weight: bold;
+  }
+  .signature {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+  }

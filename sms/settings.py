@@ -34,7 +34,7 @@ SECRET_KEY = "django-insecure-owlta%@a$a6zzfi@e6%s#7v_ad7xo1+*323rcm5=@1(ks#0g$-
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "127.0.0.1:8000",
-                 "127.0.0.1:3000", "localhost:3000"]
+                 "127.0.0.1:3000", "localhost:3000", "localhost:8000"]
 
 
 # Application definition
@@ -96,7 +96,7 @@ ROOT_URLCONF = "sms.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ['templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

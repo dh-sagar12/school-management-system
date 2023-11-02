@@ -54,21 +54,29 @@ class MenuModel(models.Model):
     menu_code =  models.CharField(max_length=6, null=False, blank=False)
     menu_name  = models.CharField(max_length=20, null=False, blank=False)
     url   = models.CharField(max_length=100, null=False, blank=False)
-    MAIN_MENU  =  'H'
+    HEAD_MENU  =  'H'
     SUB_MENU = 'M'
     REPORT_MENU  =  'R'
-    MENU_TYPE_CHOICES = [(MAIN_MENU, 'Main'), (SUB_MENU, 'Sub Menu'), (REPORT_MENU, 'Report')]
+    MENU_TYPE_CHOICES = [(HEAD_MENU, 'Head'), (SUB_MENU, 'Sub Menu'), (REPORT_MENU, 'Report')]
     menu_type =  models.CharField(choices=MENU_TYPE_CHOICES, null=False, blank=False)
-    parent_id  =  models.ForeignKey("self", on_delete=models.DO_NOTHING, db_column='parent_id',  null=True)
+    parent_id  =  models.ForeignKey("self", on_delete=models.DO_NOTHING, blank=True, db_column='parent_id', null=True)
     created_on  =  models.DateTimeField(auto_now_add=True)
 
 
     def __str__(self):
-        return self.menu_name
+        return f"({self.menu_code}) {self.menu_name}"
 
 
     class Meta:
         db_table =  'core"."menus'
+        ordering = ['menu_code']
+    
+    def save(self, *args, **kwargs):
+        
+        if self.menu_type  in ('R', 'M') and self.parent_id is None:
+            raise ValidationError({'error': 'Parent Menu is needed on Report or Sub Menu', 'status': status.HTTP_403_FORBIDDEN }) 
+            
+        super().save(*args, **kwargs)
 
 
 

@@ -4,4 +4,5 @@ from .models import *
 admin.site.register(BranchModel)
 admin.site.register(ProvincesModel)
 admin.site.register(DistrictModel)
+admin.site.register(MenuModel)
 admin.site.register(AcademicYearModel)

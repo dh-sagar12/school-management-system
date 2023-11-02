@@ -33,7 +33,7 @@ class AdmissionTransactionModel(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     tran_date = models.DateField(null=False, blank=False, auto_now=False, auto_now_add=False)
-    tran_id =  models.ForeignKey(TransactionMasterModel, on_delete=models.DO_NOTHING, null=False, blank=False, db_column='tran_id')
+    tran_id =  models.ForeignKey(TransactionMasterModel,related_name='tran_id', on_delete=models.DO_NOTHING, null=False, blank=False, db_column='tran_id')
     student_id =  models.ForeignKey(StudentModel, on_delete=models.DO_NOTHING, null=False, blank=False, db_column='student_id')
     charge_id =  models.ForeignKey(AcademicChargesModel, on_delete=models.DO_NOTHING, null=False, blank=False, db_column='charge_id')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)

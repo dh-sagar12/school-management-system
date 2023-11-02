@@ -5,6 +5,7 @@ urlpatterns = [
     path("branch/", BranchesView.as_view(), name='branches'),
     path("branch-dropdown/", BrachDropDownView.as_view(), name='branch_dropdown'),
     path("provinces/", ProvinceView.as_view(), name='provinces'),
+    path("menus/", MenusView.as_view(), name='menus'),
     path("districts/", DistrictView.as_view(), name='districts'),
     path("localbodies/", LocalBodiesView.as_view(), name='localbodies'),
     path("upload/", AttachmentView.as_view(), name='upload'),

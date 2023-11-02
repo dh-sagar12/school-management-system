@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Receipt Bill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            border: 2px solid rgba(199, 222, 183, 0.563);
+            padding: 12px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+        .logo {
+            width: 100px;
+        }
+        .school-details {
+            text-align: center;
+            line-height: 3px;
+        }
+        .fees-table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total-row {
+            font-weight: bold;
+        }
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="{% static "logo.png" %}" alt="School Logo" class='logo'>
+        </div>
+        <div class="school-details">
+            <h2>Pragati Secondary School</h2>
+            <p>Address: School Address</p>
+            <p>Contact: +123456789</p>
+            <p>Email: school@example.com</p>
+        </div>
+        <div class="date">
+            <p>Date: September 20, 2023</p>
+        </div>
+    </div>
+
+    <h1 style="text-align: center;">Receipt</h1>
+
+    <table class="fees-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Discount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tuition Fee</td>
+                <td>15000.00</td>
+                <td>2000.00</td>
+            </tr>
+            <tr>
+                <td>Library Fee</td>
+                <td>2000.00</td>
+                <td>200.00</td>
+            </tr>
+            <tr class="total-row">
+                <td>Total</td>
+                <td>17000.00</td>
+                <td>2200.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p style="text-align: center;">Balance In Word: Rs. Seventeen Thousand</p>
+
+    <div class="signature">
+        <div>
+            <p>__________________</p>
+            <p>Prepared By:</p>
+        </div>
+        <div>
+            <p> __________________</p>
+            <p>Verified By:</p>
+        </div>
+        <div>
+            <p>__________________</p>
+            <p>Received By:</p>
+        </div>
+    </div>
+</body>
+</html>

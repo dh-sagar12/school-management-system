@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView
 from  .serializers import  *
 from rest_framework.response import Response
@@ -129,4 +129,5 @@ class AcademicChargesView(APIView):
         data.is_active =  False
         data.save()
         return Response({'message': 'Success'}, status=status.HTTP_200_OK)
+
 

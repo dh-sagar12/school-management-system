@@ -50,15 +50,25 @@ export interface LocalBodiesModel {
         local_body_type: string,
 }
 
+export interface MenusModel {
+        id?: number,
+        menu_code: string,
+        menu_name: string,
+        menu_type: string,
+        parent_id: number | null,
+        created_on?: string
+}
+
+
 
 
 export interface AttachmentModel {
-        id?: number, 
-        table_name: string, 
-        table_id: number , 
-        attachment_type: string, 
-        original_file_name: string, 
-        file_name: string, 
-        is_active: boolean, 
-        created_on?: string 
+        id?: number,
+        table_name: string,
+        table_id: number,
+        attachment_type: string,
+        original_file_name: string,
+        file_name: string,
+        is_active: boolean,
+        created_on?: string
 }

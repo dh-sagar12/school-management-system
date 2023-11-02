@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView
 
 from student.serializer import StudentAdmissionViewSerializer
@@ -10,6 +11,7 @@ from core.models import AcademicYearModel
 from django.db.models import Sum
 from .models import *
 from django.db.models import Sum
+from .utils.renderers import pdf_renderer
 # Create your views here.
 
 
@@ -87,3 +89,12 @@ class TransactionMasterView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message': 'Success'}, status=status.HTTP_200_OK)
+
+
+
+
+def PrintReceiptView(request, tran_id):
+
+    transaction =  get_object_or_404(TransactionMasterModel, id=tran_id)
+        
+    return render(request, 'print-receipt.html')
