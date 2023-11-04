@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework_simplejwt import tokens
 
-from core.models import BranchModel
-from core.serializers import BranchSerializer
+from core.models import BranchModel, MenuModel
+from core.serializers import BranchSerializer, MenuSerializer
 from .serializers import UserLoginSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -78,6 +78,7 @@ class InitAuthorizeUserBranchView(APIView):
             request_branch = request.session.get('branch')
             today_np  = request.session.get('today_np')
             today_ad  = request.session.get('today_ad')
+            menu_policies =  request.session.get('menu_policies')
             if user_instance is not None and request_branch is not None:
 
                 # for authenticated user
@@ -89,13 +90,15 @@ class InitAuthorizeUserBranchView(APIView):
                     id=request_branch)
                 branch_serilizer = BranchSerializer(authenticated_branch)
 
+
                 return Response(
                     {
                         'user': user_serializer.data,
                         'access': token['access'],
                         'branch': branch_serilizer.data, 
                         'today_np': today_np, 
-                        'today_ad':today_ad
+                        'today_ad':today_ad, 
+                        'menu_policies': menu_policies
                     }, status=status.HTTP_200_OK)
 
             return Response({'error': 'Un-Authorized'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -4,25 +4,29 @@ import APIHandlers from '@/utils/APIHandlers'
 import getAcademicSession from '@/utils/AcademicSessionServices'
 import { Button, Card, Col, Divider, Empty, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Table, message } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlinePlus } from 'react-icons/ai'
 
 
-interface Props {
-    ClassesModel: ClassesModel[]
-    CoursesModel: CoursesModel[]
-}
-
-
-const ChargesSetup = (prop: Props) => {
+const ChargesSetup = () => {
     const [ShowCourse, setShowCourse] = useState(false)
     const [AcademicSessionDropdown, setAcademicSessionDropdown] = useState<any>([])
     const [ChargesPostData, setChargesPostData] = useState<ChargesModel[]>([])
     const [form] = Form.useForm();
     const [PageSubmitting, setPageSubmitting] = useState(false)
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [Classes, setClasses] = useState<ClassesModel[]>([])
+    const [Courses, setCourses] = useState<CoursesModel[]>([])
 
 
+    useEffect(() => {
+        APIHandlers.promises(['/api/academic/classes/', 'api/academic/course/']).then(responses=> {
+            setClasses(responses[0])
+            setCourses(responses[1])
+        })
+        
+    }, [])
+    
 
     const course_needed = ['Eleven', 'Twelve', 'Bachelor', 'Master']
 
@@ -33,7 +37,7 @@ const ChargesSetup = (prop: Props) => {
             message.error(err.message)
         })
 
-        if (prop.ClassesModel.filter((item) => {
+        if (Classes.filter((item) => {
             return course_needed.some(elem => {
                 return elem == item.class_name
             })
@@ -50,7 +54,7 @@ const ChargesSetup = (prop: Props) => {
 
     const OnChangeInCourse = async (value: number) => {
         form.setFieldsValue({ academic_session_type: null })
-        let course = prop.CoursesModel.filter(item => item.id == value)[0]
+        let course = Courses.filter(item => item.id == value)[0]
         if (value > 0) {
             let academic_session_dropdown_data = await getAcademicSession(course.course_duration, course.academic_type_id)
             setAcademicSessionDropdown(academic_session_dropdown_data)
@@ -118,7 +122,7 @@ const ChargesSetup = (prop: Props) => {
             dataIndex: 'class_id',
             key: 'class_id',
             render: (record) => {
-                return prop.ClassesModel.find(item => item.id == record)?.class_name
+                return Classes.find(item => item.id == record)?.class_name
             },
 
         },
@@ -128,7 +132,7 @@ const ChargesSetup = (prop: Props) => {
             key: 'course_id',
             render: (record) => {
                 return record !== undefined ?
-                    prop.CoursesModel.find(item => item.id == record)?.course_name : '-'
+                    Courses.find(item => item.id == record)?.course_name : '-'
             }
 
         },
@@ -165,7 +169,6 @@ const ChargesSetup = (prop: Props) => {
 
     function HandleDeleteCharge(record: ChargesModel): void {
         setConfirmLoading(true)
-        console.log(record);
         if (record.id) {
             APIHandlers.delete(`/api/academic/charges/delete/${record.id}`).then(response => {
                 message.success('Deleted Successfully!')
@@ -182,7 +185,6 @@ const ChargesSetup = (prop: Props) => {
     const handleSave = () => {
         setPageSubmitting(true)
         let data = ChargesPostData.filter(item => item.id == undefined)
-        console.log(data);
 
         APIHandlers.post('/api/academic/charges/', { 'charges': data }).then(response => {
             message.success('Success')
@@ -220,7 +222,7 @@ const ChargesSetup = (prop: Props) => {
                                     disabled={ChargesPostData.length > 0}
                                 >
                                     {
-                                        prop.ClassesModel.map(item => {
+                                        Classes.map(item => {
                                             return (
                                                 <Select.Option value={item.id} key={item.id}>{item.class_name}</Select.Option>
                                             )
@@ -243,7 +245,7 @@ const ChargesSetup = (prop: Props) => {
 
                                             >
                                                 {
-                                                    prop.CoursesModel.map(item => {
+                                                    Courses.map(item => {
                                                         return (
                                                             <Select.Option value={item.id} key={item.id}>{item.course_name}</Select.Option>
                                                         )

@@ -18,6 +18,6 @@ from django.urls import  path
 from .views import *
 
 urlpatterns = [
-    path('staff/', StaffDetailsView.as_view(), name='staff' ),
-    path('staff/<int:id>', StaffDetailsView.as_view(), name='staff_get' )
+    path('employee/', StaffDetailsView.as_view(), name='staff' ),
+    path('employee/<int:id>', StaffDetailsView.as_view(), name='staff_get' )
 ]

@@ -5,6 +5,7 @@ import LayOut from '../Layout/Layout';
 import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import APIHandlers from '@/utils/APIHandlers';
 import { AuthContext } from '@/Context/AuthContext';
+import { error } from 'console';
 
 
 
@@ -15,7 +16,7 @@ const AuthChecker =  ({ children }: { children: React.ReactNode }) => {
     const [IsLayoutNeeded, setIsLayoutNeeded] = useState(false)
     const [isLoading, setisLoading] = useState(true)
 
-    const { setBranch, setUser, setAuthenticated, setTodayDateAd, setTodayDateNP } = useContext(AuthContext)
+    const { setBranch, setUser, setAuthenticated, setTodayDateAd, setTodayDateNP, setMenuMeta } = useContext(AuthContext)
 
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const AuthChecker =  ({ children }: { children: React.ReactNode }) => {
                     setTodayDateNP(response.today_np)
                     setTodayDateAd(response.today_ad)
                     setisLoading(false)
-                    
+                    setMenuMeta(response.menu_policies)
                 }
 
             }).catch(error => {

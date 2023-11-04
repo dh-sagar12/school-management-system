@@ -12,22 +12,42 @@ import { usePathname, useRouter } from 'next/navigation'
 
 
 
-interface Props {
-    Students: any
-}
+// interface Props {
+//     Students: any
+// }
 
-const StudentHome = (props: Props) => {
+const StudentHome = () => {
 
     const [Loading, setLoading] = useState<boolean>(false)
-    const [InfineScrollStudentData, setInfineScrollStudentData] = useState(props.Students?.results)
+    const [InfineScrollStudentData, setInfineScrollStudentData] = useState([])
     const [NextReqData, setNextReqData] = useState({
-        count: props?.Students?.count,
-        next: props?.Students?.next,
-        previous: props?.Students?.previous,
+        count: '',
+        next: '',
+        previous: '',
     })
     const [query, setquery] = useState<string>('')
     const router = useRouter()
     const pathname = usePathname()
+
+
+    useEffect(() => {
+        APIHandlers.post('/api/student/filter/', {query: ''}).then(
+            response => {
+                console.log(response)
+                setInfineScrollStudentData(response?.results)
+                setNextReqData({
+                    count: response?.count,
+                    next: response?.next,
+                    previous: response?.previous,
+                })
+            
+            }
+        )
+
+
+    }, [])
+    
+
 
 
     const fetchNextStudentPage = () => {

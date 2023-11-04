@@ -3,8 +3,8 @@
 'use client'
 
 import { UserInfo } from '@/authentication/authTypes';
-import { BranchView } from '@/core/coreTypes';
-import { ReactNode, createContext, useContext, useState } from 'react';
+import { BranchView, MenusModel } from '@/core/coreTypes';
+import { ReactNode, createContext, useState } from 'react';
 
 interface AuthContextProps {
     usermeta: UserInfo | null,
@@ -16,6 +16,8 @@ interface AuthContextProps {
     today_date: any,
     setTodayDateAd: any, 
     setTodayDateNP: any, 
+    menusmeta: MenusModel[] | null, 
+    setMenuMeta: (menusmeta: MenusModel[] | null) => void
 
     
 }
@@ -33,6 +35,9 @@ const AuthContext = createContext<AuthContextProps>({
     today_date: null, 
     setTodayDateAd: ()=>{},
     setTodayDateNP: ()=>{},
+    menusmeta:  null, 
+    setMenuMeta: () => {}
+
 });
 
 
@@ -40,6 +45,7 @@ const AuthContext = createContext<AuthContextProps>({
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
     const [usermeta, setUsermeta] = useState<UserInfo | null>(null);
+    const [menusmeta, setMenusmeta] = useState<MenusModel[] | null>(null)
     const [branchmeta, setBranchmeta] = useState<BranchView | null>(null);
     const [Authenticated, setAuthenticated] = useState<boolean>(false);
     const [TodayDate, setTodayDate] = useState({
@@ -55,6 +61,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         return {...preval, today_date_ad: date}
     })
 
+    const setMenus =  (newMenuMeta: MenusModel[] | null) => setMenusmeta(newMenuMeta)
+
     const setTodayDateNP  =  (date: string)=>setTodayDate((preval)=>{
         return {...preval, today_date_np: date}
     })
@@ -67,8 +75,9 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setAuthenticated: setAuthenticationStatus, 
         today_date : TodayDate, 
         setTodayDateAd: setTodayDateAd, 
-        setTodayDateNP: setTodayDateNP
-
+        setTodayDateNP: setTodayDateNP, 
+        menusmeta:  menusmeta, 
+        setMenuMeta:  setMenus
     }
 
 

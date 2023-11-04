@@ -1,10 +1,14 @@
+from typing import Any
 from django.contrib.auth import authenticate
 from django.http import QueryDict
-from core.models import BranchModel, DayOperationsModel
+from authentication.models import MenuPermissionModel
+from core.models import BranchModel, DayOperationsModel, MenuModel
 import json
 
+from core.serializers import MenuSerializer
 
-class LoggedInBranchMiddleware:
+
+class LoggedInBranchAndMenusMiddleware:
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -32,5 +36,10 @@ class LoggedInBranchMiddleware:
                 request.session['today_np'] =  today_np
                 request.session['today_ad'] =  today_ad
 
+                # adding permitted menu in menu permission
+                user_menus =  MenuModel.objects.filter(menu_policies__user_id  =  user, menu_policies__branch_id=branch_id,    hidden =  False)
+                serialized_menu =  MenuSerializer(user_menus, many=True)
+                request.session['menu_policies']  = serialized_menu.data
+                # all_menus =  MenuModel.objects.filter(hidden  =  False)
         response = self.get_response(request)
         return response

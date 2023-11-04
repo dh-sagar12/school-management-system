@@ -69,7 +69,7 @@ class MenusView(APIView):
         return Response({'message': 'Success'}, status=status.HTTP_201_CREATED)
 
     def get(self, request):
-        menus = MenuModel.objects.all()
+        menus = MenuModel.objects.filter(hidden  =  False)
         serializer = MenuSerializer(menus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

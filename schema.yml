@@ -1,0 +1,803 @@
+openapi: 3.0.3
+info:
+  title: Your Project API
+  version: 1.0.0
+  description: Your project description
+paths:
+  /api/academic/academic-type/:
+    get:
+      operationId: academic_academic_type_retrieve
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_academic_type_create
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/academic/charges/:
+    get:
+      operationId: academic_charges_retrieve
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_charges_create
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: academic_charges_destroy
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/academic/charges/{class_id}/:
+    get:
+      operationId: academic_charges_retrieve_2
+      parameters:
+      - in: path
+        name: class_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_charges_create_2
+      parameters:
+      - in: path
+        name: class_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: academic_charges_destroy_2
+      parameters:
+      - in: path
+        name: class_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/academic/charges/delete/{id}/:
+    get:
+      operationId: academic_charges_delete_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_charges_delete_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: academic_charges_delete_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/academic/classes/:
+    get:
+      operationId: academic_classes_retrieve
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_classes_create
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/academic/course/:
+    get:
+      operationId: academic_course_retrieve
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_course_create
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/academic/faculty/:
+    get:
+      operationId: academic_faculty_retrieve
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_faculty_create
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/academic/section/:
+    get:
+      operationId: academic_section_retrieve
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_section_create
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/academic/subject/:
+    get:
+      operationId: academic_subject_retrieve
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: academic_subject_create
+      tags:
+      - academic
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/branch/:
+    get:
+      operationId: auth_branch_retrieve
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/gettoken/:
+    post:
+      operationId: auth_gettoken_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/auth/init/:
+    get:
+      operationId: auth_init_retrieve
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/refreshtoken/:
+    post:
+      operationId: auth_refreshtoken_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/signup/:
+    post:
+      operationId: auth_signup_create
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/verifytoken/:
+    post:
+      operationId: auth_verifytoken_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /api/core/attachment/{table_id}/:
+    get:
+      operationId: core_attachment_retrieve
+      parameters:
+      - in: path
+        name: table_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: core_attachment_create
+      parameters:
+      - in: path
+        name: table_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: core_attachment_destroy
+      parameters:
+      - in: path
+        name: table_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - core
+      responses:
+        '204':
+          description: No response body
+  /api/core/attachment/delete/{attachment_id}/:
+    get:
+      operationId: core_attachment_delete_retrieve
+      parameters:
+      - in: path
+        name: attachment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: core_attachment_delete_create
+      parameters:
+      - in: path
+        name: attachment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: core_attachment_delete_destroy
+      parameters:
+      - in: path
+        name: attachment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - core
+      responses:
+        '204':
+          description: No response body
+  /api/core/branch/:
+    get:
+      operationId: core_branch_retrieve
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: core_branch_create
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+  /api/core/branch-dropdown/:
+    get:
+      operationId: core_branch_dropdown_retrieve
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+  /api/core/districts/:
+    get:
+      operationId: core_districts_retrieve
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+  /api/core/localbodies/:
+    get:
+      operationId: core_localbodies_retrieve
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+  /api/core/menus/:
+    get:
+      operationId: core_menus_retrieve
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: core_menus_create
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+  /api/core/provinces/:
+    get:
+      operationId: core_provinces_retrieve
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+  /api/core/upload/:
+    get:
+      operationId: core_upload_retrieve
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: core_upload_create
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: core_upload_destroy
+      tags:
+      - core
+      responses:
+        '204':
+          description: No response body
+  /api/core/upload/temp/:
+    post:
+      operationId: core_upload_temp_create
+      tags:
+      - core
+      responses:
+        '200':
+          description: No response body
+  /api/staff/staff/:
+    get:
+      operationId: staff_staff_retrieve
+      tags:
+      - staff
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: staff_staff_create
+      tags:
+      - staff
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: staff_staff_update
+      tags:
+      - staff
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/staff/staff/{id}:
+    get:
+      operationId: staff_staff_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - staff
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: staff_staff_create_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - staff
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: staff_staff_update_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - staff
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/student/admission/:
+    post:
+      operationId: student_admission_create
+      tags:
+      - student
+      responses:
+        '200':
+          description: No response body
+  /api/student/admission/filter/:
+    get:
+      operationId: student_admission_filter_retrieve
+      tags:
+      - student
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/student/filter/:
+    post:
+      operationId: student_filter_create
+      tags:
+      - student
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/student/student/:
+    get:
+      operationId: student_student_retrieve
+      description: |-
+        API view for adding and retrieving student informtion.
+
+        Methods:
+        - post(request): Create a new student with associated contact, address, and class information.
+        - get(request, id): Retrieve student information based on the provided ID.
+      tags:
+      - student
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: student_student_create
+      description: |-
+        Create a new student with associated contact, address, and class information.
+
+        Request Parameters:
+        - request: The HTTP request object containing the data for creating a new student.
+
+        Returns:
+        - Response: HTTP response with the serialized student data and a status code of 201 if successful.
+
+        Raises:
+        - ValidationError: If the serializer data is invalid.
+      tags:
+      - student
+      responses:
+        '200':
+          description: No response body
+  /api/student/student/{id}:
+    get:
+      operationId: student_student_retrieve_2
+      description: |-
+        API view for adding and retrieving student informtion.
+
+        Methods:
+        - post(request): Create a new student with associated contact, address, and class information.
+        - get(request, id): Retrieve student information based on the provided ID.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - student
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: student_student_create_2
+      description: |-
+        Create a new student with associated contact, address, and class information.
+
+        Request Parameters:
+        - request: The HTTP request object containing the data for creating a new student.
+
+        Returns:
+        - Response: HTTP response with the serialized student data and a status code of 201 if successful.
+
+        Raises:
+        - ValidationError: If the serializer data is invalid.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - student
+      responses:
+        '200':
+          description: No response body
+  /api/tran/admission/detail/{tran_id}:
+    get:
+      operationId: tran_admission_detail_retrieve
+      parameters:
+      - in: path
+        name: tran_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tran
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/tran/due-charges/:
+    post:
+      operationId: tran_due_charges_create
+      tags:
+      - tran
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/tran/master/{id}:
+    patch:
+      operationId: tran_master_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tran
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    TokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - email
+      - password
+      - refresh
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token

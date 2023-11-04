@@ -60,6 +60,7 @@ class MenuModel(models.Model):
     MENU_TYPE_CHOICES = [(HEAD_MENU, 'Head'), (SUB_MENU, 'Sub Menu'), (REPORT_MENU, 'Report')]
     menu_type =  models.CharField(choices=MENU_TYPE_CHOICES, null=False, blank=False)
     parent_id  =  models.ForeignKey("self", on_delete=models.DO_NOTHING, blank=True, db_column='parent_id', null=True)
+    hidden =  models.BooleanField(default=False, db_column='hidden')
     created_on  =  models.DateTimeField(auto_now_add=True)
 
 

@@ -15,7 +15,7 @@ interface Props {
 
 const LayoutHeader = (props: Props) => {
 
-  const { usermeta, branchmeta } = useContext(AuthContext)
+  const { usermeta, branchmeta, today_date } = useContext(AuthContext)
 
   // const handleLogout = (event: any) => {
 
@@ -54,7 +54,7 @@ const LayoutHeader = (props: Props) => {
 
       />
       <li className='list-none font-bold'>{branchmeta?.org_name}({branchmeta?.nick_name})</li>
-      <li className='list-none font-bold'>Friday, 6 Shrawan, 2080</li>
+      <li className='list-none font-bold'>{today_date.today_date_np }</li>
       <li className='list-none font-bold'>{usermeta?.first_name} {usermeta?.last_name}</li>
       <div className='flex space-x-8  '>
         <Button icon={<FiBell />} ghost={true} type='text' className='text-purple-700 text-lg' />

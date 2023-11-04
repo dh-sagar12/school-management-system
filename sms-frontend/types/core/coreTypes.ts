@@ -54,8 +54,9 @@ export interface MenusModel {
         id?: number,
         menu_code: string,
         menu_name: string,
+        url: string, 
         menu_type: string,
-        parent_id: number | null,
+        parent_id: number | null ,
         created_on?: string
 }
 

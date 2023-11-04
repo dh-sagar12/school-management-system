@@ -113,7 +113,7 @@ class MenuPermissionModel(models.Model):
     id  = models.BigAutoField(primary_key=True)
     user_id  = models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column='user_id', related_name='menu_policies_user_id')
     branch_id  =  models.ForeignKey('core.BranchModel', on_delete=models.DO_NOTHING, db_column='branch_id')
-    menu_id  =  models.ForeignKey('core.MenuModel', on_delete=models.DO_NOTHING, db_column='menu_id')
+    menu_id  =  models.ForeignKey('core.MenuModel', on_delete=models.DO_NOTHING, related_name='menu_policies', db_column='menu_id')
     created_by =  models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column='created_by', related_name='menu_policies_created_by')
     can_edit =  models.BooleanField(default=False, null=False )
 

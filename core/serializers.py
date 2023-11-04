@@ -27,7 +27,7 @@ class MenuSerializer(ModelSerializer):
 
     class Meta:
         model = MenuModel
-        fields = ("id", "menu_code", "menu_name",
+        fields = ("id", "menu_code", "menu_name", "url",
                   "menu_type", "parent_id", "created_on")
         extra_kwargs = {
             'id': {'read_only': True},
