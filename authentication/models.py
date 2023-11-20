@@ -102,6 +102,7 @@ class BranchLoginPolicyModel(models.Model):
         db_table=  'auth"."branch_policies'
         verbose_name = "Branch Policy"
         verbose_name_plural = "Branch Policies"    
+        ordering  = ['-id']
 
 
     def __str__(self):

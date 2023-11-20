@@ -139,12 +139,24 @@ class BranchLoginPolicyView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message': 'Login Policy Updated Successfully'}, status=status.HTTP_201_CREATED)
+    
+    def put(self, request):
+        try:
+            policy_instance = self.model_class.objects.get(id=request.data.get('id'))
+            serializer = self.serializer_class(policy_instance, data= request.data, partial= True, context =  request)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({'message': 'Login Policy Updated Successfully'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error":  f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
 
     def get(self, request):
-        policy_id = request.GET.get('id')
+        policy_id = request.GET.get('policy_id')
         print(policy_id)
         if policy_id is not None:
-            queryset = self.model_class.objects.get(id=id)
+            queryset = self.model_class.objects.get(id=policy_id)
             serializer = self.serializer_class(queryset, context  = request)
         else:
             queryset = self.model_class.objects.filter(

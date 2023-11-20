@@ -49,14 +49,17 @@ const BranchPolicyForm = (prop: Prop) => {
         })
 
         if (prop.slug !== undefined) {
-            APIHandlers.get('api/auth/branch-policies', {policy_id: prop.slug}).then((policy_info: BranchLoginPolicyModel) => {
+            console.log(prop.slug)
+            APIHandlers.get('api/auth/branch-policies', { policy_id: prop.slug }).then((policy_info: any) => {
+                console.log(policy_info.time_access_from)
+
                 form.setFieldsValue({
                     date_access_from: dayjs(policy_info.date_access_from),
-                    date_access_to: dayjs(policy_info.date_access_to), 
+                    date_access_to: dayjs(policy_info.date_access_to),
                     time_access_from: dayjs(policy_info.time_access_from, 'HH:mm:ss'),
                     time_access_to: dayjs(policy_info.time_access_to, 'HH:mm:ss'),
-                    user_id: policy_info.user_id, 
-                    branch_id: policy_info.branch_id
+                    user_id: policy_info.user_id.id,
+                    branch_id: policy_info.branch_id.id
                 })
             })
         }
@@ -73,14 +76,28 @@ const BranchPolicyForm = (prop: Prop) => {
             time_access_to: form_data.time_access_to.format('HH:mm:ss')
         }
 
-        APIHandlers.post('/api/auth/branch-policies/', policy_payload).then(response => {
-            setPageSubmitting(false)
-            message.success(response.message)
-            router.push('/configuration/branch-policies')
-        }).catch(error => {
-            setPageSubmitting(false)
-            message.error(error.message)
-        })
+        if (prop.slug != undefined) {
+            APIHandlers.put('/api/auth/branch-policies/', { ...policy_payload, id: prop.slug }).then(response => {
+                setPageSubmitting(false)
+                message.success(response.message)
+                router.push('/configuration/branch-policies')
+            }).catch(error => {
+                setPageSubmitting(false)
+                message.error(error.message)
+            })
+        }
+        else {
+
+            APIHandlers.post('/api/auth/branch-policies/', policy_payload).then(response => {
+                setPageSubmitting(false)
+                message.success(response.message)
+                router.push('/configuration/branch-policies')
+            }).catch(error => {
+                setPageSubmitting(false)
+                message.error(error.message)
+            })
+        }
+
 
     }
 
