@@ -1,8 +1,11 @@
 'use client';
 import Sidebar from './Sidebar'
-import { ReactNode, useState } from 'react';
-import {  Layout, } from 'antd';
+import { ReactNode, useContext, useEffect, useState } from 'react';
+import { Alert, Layout, } from 'antd';
 import LayoutHeader from './LayoutHeader';
+import { AuthContext } from '@/Context/AuthContext';
+import { usePathname } from 'next/navigation';
+import { MenusModel } from '@/core/coreTypes';
 
 
 
@@ -19,6 +22,22 @@ export default function LayOut(
 
 
   const [collapsed, setCollapsed] = useState(false);
+  const [HasMenuPermission, setHasMenuPermission] = useState(false)
+  const pathname = usePathname();
+  const { menusmeta } = useContext(AuthContext)
+
+  useEffect(() => {
+
+    let has_permission = menusmeta.filter((item: MenusModel) => (item.url == pathname || pathname == '/'))
+
+    if (has_permission.length > 0) {
+      setHasMenuPermission(true)
+    }
+
+
+
+  }, [pathname])
+
 
 
   const headerStyle: React.CSSProperties = {
@@ -56,10 +75,21 @@ export default function LayOut(
         </Sider>
         <Layout>
           <Header style={headerStyle} className='shadow-xl border-r-3 text-purple-700 h-16 ps-3 pe-3  '>
-            <LayoutHeader collapsed ={collapsed} setCollapsed={setCollapsed}  />
+            <LayoutHeader collapsed={collapsed} setCollapsed={setCollapsed} />
           </Header>
           <Content >
-            {children}
+
+            {
+              HasMenuPermission ?
+                children
+                :
+                <div className='px-5 py-2 overflow-y-scroll max-h-[80vh] min-h-[80vh]'>
+
+                  <Alert message="You Don't Have Permission To View This Page Please Contact To Your Administrator." type="warning" />
+                </div>
+
+
+            }
           </Content>
           <Footer style={footerStyle} className='border-t-1 '>
             Copyright to Sagar Dhakal
