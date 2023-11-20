@@ -1,16 +1,19 @@
 from rest_framework.views import APIView
 from rest_framework_simplejwt import tokens
 
-from core.models import BranchModel, MenuModel
-from core.serializers import BranchSerializer, MenuSerializer
-from .serializers import UserLoginSerializer, UserSerializer
+from core.models import BranchModel
+from core.serializers import BranchSerializer
+from .serializers import BranchLoginPolicySerializer, MenuPolicyModelSerializer, MenuPolicySerializer, UserLoginSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
-from .models import User
+from .models import BranchLoginPolicyModel, MenuPermissionModel, User
 from .permissions import CheckBranchPermission
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
+
 # Create your views here.
 
 
@@ -66,7 +69,7 @@ class UserLogoutView(APIView):
         response.data = {
             'message': 'success'
         }
-        response.status_code =  status.HTTP_200_OK
+        response.status_code = status.HTTP_200_OK
         return response
 
 
@@ -76,9 +79,9 @@ class InitAuthorizeUserBranchView(APIView):
         if request.user.is_authenticated:
             user_instance = User.objects.get(id=request.user.id)
             request_branch = request.session.get('branch')
-            today_np  = request.session.get('today_np')
-            today_ad  = request.session.get('today_ad')
-            menu_policies =  request.session.get('menu_policies')
+            today_np = request.session.get('today_np')
+            today_ad = request.session.get('today_ad')
+            menu_policies = request.session.get('menu_policies')
             if user_instance is not None and request_branch is not None:
 
                 # for authenticated user
@@ -90,14 +93,13 @@ class InitAuthorizeUserBranchView(APIView):
                     id=request_branch)
                 branch_serilizer = BranchSerializer(authenticated_branch)
 
-
                 return Response(
                     {
                         'user': user_serializer.data,
                         'access': token['access'],
-                        'branch': branch_serilizer.data, 
-                        'today_np': today_np, 
-                        'today_ad':today_ad, 
+                        'branch': branch_serilizer.data,
+                        'today_np': today_np,
+                        'today_ad': today_ad,
                         'menu_policies': menu_policies
                     }, status=status.HTTP_200_OK)
 
@@ -118,3 +120,61 @@ class AuthenticatedBranchView(APIView):
             else:
                 return Response({"error":  'Un-Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({"error":  'Un-Authorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserListView(ListAPIView):
+    queryset = User.objects.filter(is_active=True)
+    serializer_class = UserSerializer
+    pagination_class = None
+
+
+class BranchLoginPolicyView(APIView):
+    serializer_class = BranchLoginPolicySerializer
+    model_class = BranchLoginPolicyModel
+    pagination_class = PageNumberPagination()
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data, context=request)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'Login Policy Updated Successfully'}, status=status.HTTP_201_CREATED)
+
+    def get(self, request):
+        policy_id = request.GET.get('id')
+        print(policy_id)
+        if policy_id is not None:
+            queryset = self.model_class.objects.get(id=id)
+            serializer = self.serializer_class(queryset, context  = request)
+        else:
+            queryset = self.model_class.objects.filter(
+                branch_id=request.session.get('branch'))
+            paginated_queryset = self.pagination_class.paginate_queryset(queryset, request)
+            serializer = self.serializer_class(paginated_queryset, many=True, context  = request)
+            paginated_resp = self.pagination_class.get_paginated_response(
+                serializer.data)
+            return Response(paginated_resp.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MenuPolicyView(APIView):
+
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        branch_id = request.GET.get('branch_id')
+        print(user_id, branch_id)
+        if user_id is not None and branch_id is not None:
+            queryset = MenuPermissionModel.objects.filter(
+                branch_id=branch_id, user_id=user_id)
+            serializer = MenuPolicyModelSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({"detail": "User and Branch is Not Provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        serializer = MenuPolicySerializer(
+            data=request.data, context=request.user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

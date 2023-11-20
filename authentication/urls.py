@@ -1,6 +1,6 @@
 from django.urls import  path
 
-from authentication.views import AuthenticatedBranchView, CreateUserView, UserLoginView, UserLogoutView, InitAuthorizeUserBranchView
+from authentication.views import AuthenticatedBranchView, CreateUserView, MenuPolicyView, UserLoginView, UserLogoutView, InitAuthorizeUserBranchView, UserListView, BranchLoginPolicyView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 
@@ -13,7 +13,9 @@ urlpatterns = [
     path('verifytoken/', TokenVerifyView.as_view(), name='verify_token'),
     path('init/', InitAuthorizeUserBranchView.as_view(), name='init_user_branch'),
     path('branch/', AuthenticatedBranchView.as_view(), name='loggedin_branch'),
-
+    path('users/', UserListView.as_view(), name='users'),
+    path('menu-policies/', MenuPolicyView().as_view(), name='menu-policies'),
+    path('branch-policies/', BranchLoginPolicyView().as_view(), name='branch-policies'),
 
 
 ]

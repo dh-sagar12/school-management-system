@@ -8,7 +8,6 @@ class CheckBranchPermission(BasePermission):
 
     def  has_permission(self, request, view):
 
-        message = 'Adding customers not allowed.'
         requested_branch =  request.data.get('branch_id')
         requested_email   =  request.data.get('email')
 

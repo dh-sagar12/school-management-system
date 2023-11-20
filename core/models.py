@@ -70,6 +70,8 @@ class MenuModel(models.Model):
 
     class Meta:
         db_table =  'core"."menus'
+        verbose_name=  'Menu'
+        verbose_name_plural  =  'Menus'
         ordering = ['menu_code']
     
     def save(self, *args, **kwargs):

@@ -61,12 +61,9 @@ const Sidebar = () => {
 
 
     useEffect(() => {
-        console.log(menusmeta)
         APIHandlers.get('api/core/menus').then(resp => {
 
             const authorized_menu = resp.filter((item: MenusModel) => {
-                console.log(menusmeta?.includes(item))
-                console.log(item)
                 let to_return = menusmeta?.map(i => i.id)
                 let available_parent_ids = menusmeta?.map((i: any) => i.parent_id)
                 return to_return?.includes(item.id) || (item.parent_id == null && available_parent_ids?.includes(item.id))

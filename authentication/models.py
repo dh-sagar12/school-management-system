@@ -105,7 +105,7 @@ class BranchLoginPolicyModel(models.Model):
 
 
     def __str__(self):
-        return f"{self.user_id}"
+        return f"{self.user_id} - {self.branch_id}"
     
 
 
@@ -124,5 +124,5 @@ class MenuPermissionModel(models.Model):
         verbose_name_plural = "Menu Policies"  
 
     def __str__(self):
-        return f"{self.user_id}"
+        return f"{self.menu_id} -  {self.user_id} - {self.branch_id}"
 
